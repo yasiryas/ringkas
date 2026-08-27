@@ -1,0 +1,6 @@
+# WP plugin scaffolding — skip dev/log artifacts if any get added
+*.log
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
