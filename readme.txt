@@ -64,6 +64,7 @@ Gunakan tombol **Feedback** yang ada di halaman Kelola Tautan (wp-admin atau das
 == Screenshots ==
 
 1. Halaman Kelola Tautan di wp-admin.
+2. Dashboard front-end di /short/dashboard.
 
 == Changelog ==
 
