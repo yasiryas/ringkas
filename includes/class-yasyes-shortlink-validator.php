@@ -1,14 +1,14 @@
-<?php
+﻿<?php
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-class Ringkas_Validator {
+class Yasyes_Shortlink_Validator {
 
 	public const CODE_PATTERN = '/^[A-Za-z0-9]{3,20}$/';
 
-	// Path milik WordPress dan plugin ini — tidak boleh dipakai sebagai short_code.
+	// WordPress and plugin paths — cannot be used as short_code.
 	public const RESERVED = array(
 		'short',
 		'wp-admin',
@@ -31,7 +31,7 @@ class Ringkas_Validator {
 	}
 
 	public static function exists_in_links( string $code ): bool {
-		return (bool) Ringkas_Link_Model::find_by_code( $code );
+		return (bool) Yasyes_Shortlink_Link_Model::find_by_code( $code );
 	}
 
 	public static function is_slug_taken_by_wp_content( string $code ): bool {
@@ -55,8 +55,8 @@ class Ringkas_Validator {
 	}
 
 	/**
-	 * Validasi lengkap untuk short_code custom.
-	 * Mengembalikan string kode yang valid atau WP_Error.
+	 * Full validation for a custom short_code.
+	 * Returns the valid code string or WP_Error.
 	 *
 	 * @return string|WP_Error
 	 */
@@ -64,16 +64,16 @@ class Ringkas_Validator {
 		$code = sanitize_text_field( trim( $code ) );
 
 		if ( '' === $code ) {
-			return new WP_Error( 'ringkas_empty_code', 'Alias tidak boleh kosong.' );
+			return new WP_Error( 'yasyes_shortlink_empty_code', 'Alias cannot be empty.' );
 		}
 		if ( ! self::is_valid_format( $code ) ) {
-			return new WP_Error( 'ringkas_invalid_format', 'Alias hanya boleh huruf/angka, 3-20 karakter.' );
+			return new WP_Error( 'yasyes_shortlink_invalid_format', 'Alias may only contain letters/numbers, 3-20 characters.' );
 		}
 		if ( self::is_reserved( $code ) || self::is_slug_taken_by_wp_content( $code ) ) {
-			return new WP_Error( 'ringkas_slug_conflict', 'Kode ini bentrok dengan path/slug yang sudah ada di situs.' );
+			return new WP_Error( 'yasyes_shortlink_slug_conflict', 'This code conflicts with an existing page/slug on the site.' );
 		}
 		if ( self::exists_in_links( $code ) ) {
-			return new WP_Error( 'ringkas_duplicate', 'Kode ini sudah dipakai tautan lain.' );
+			return new WP_Error( 'yasyes_shortlink_duplicate', 'This code is already used by another link.' );
 		}
 
 		return $code;
@@ -92,7 +92,7 @@ class Ringkas_Validator {
 			return $code;
 		}
 
-		throw new RuntimeException( 'Gagal membuat kode unik setelah 5 percobaan.' );
+		throw new RuntimeException( 'Failed to generate a unique code after 5 attempts.' );
 	}
 
 	private static function random_base62( int $length ): string {
@@ -110,7 +110,7 @@ class Ringkas_Validator {
 	}
 
 	/**
-	 * Validasi URL tujuan: harus http/https, bukan open-redirect ke skema lain.
+	 * Validate destination URL: must be http/https, no open-redirect to other schemes.
 	 *
 	 * @return string|WP_Error
 	 */
@@ -118,7 +118,7 @@ class Ringkas_Validator {
 		$url = esc_url_raw( trim( $url ), array( 'http', 'https' ) );
 
 		if ( empty( $url ) || ! preg_match( '#^https?://[^\s]+$#i', $url ) ) {
-			return new WP_Error( 'ringkas_invalid_url', 'URL tujuan tidak valid. Gunakan format http(s)://...' );
+			return new WP_Error( 'yasyes_shortlink_invalid_url', 'Destination URL is invalid. Use the http(s):// format.' );
 		}
 
 		return $url;

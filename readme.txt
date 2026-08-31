@@ -1,4 +1,4 @@
-=== Ringkas ===
+﻿=== Yasyes Short Link ===
 Contributors: yasiryas
 Tags: shortlink, short link, url shortener, link management, url
 Requires at least: 6.0
@@ -8,74 +8,73 @@ Stable tag: 1.4.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Buat short link di root domain (domain.com/kode) dengan dashboard minimalis, pencarian instan, dan auto-expire. Tanpa plugin atau layanan pihak ketiga.
+Create root domain short links with a minimal dashboard, instant search, and auto-expire features. Clean, fast, and self-hosted.
 
 == Description ==
 
-Plugin **Ringkas** memungkinkan Anda membuat tautan pendek langsung di root domain (contoh: `domain.com/promo2026`) tanpa perlu layanan short-link eksternal. Semua data tersimpan di database WordPress Anda sendiri.
+Yasyes Short Link lets you create short URLs directly on your root domain (e.g. `domain.com/promo2026`) without any external short-link service. All data is stored in your own WordPress database.
 
-= Fitur utama =
+= Key Features =
 
-* **Short link di root domain** — tautan pendek yang bersih seperti `https://domain.com/promo2026`
-* **Kelola dari wp-admin** — halaman "Kelola Tautan" dengan antarmuka yang bersih dan mudah dipakai
-* **Dashboard front-end** — kelola tautan juga dari `/short/dashboard`
-* **Pencarian instan** — filter alias atau URL tujuan secara real-time
-* **Auto-expire** — setiap tautan bisa diberi tanggal kedaluwarsa otomatis
-* **Statistik realtime** — jumlah tautan, tautan aktif, dan total klik diperbarui otomatis
-* **Feedback via email** — pengguna dapat mengirim saran atau laporan bug langsung ke admin lewat email
-* **Ringan & cepat** — CSS dan JavaScript kecil, font sistem, tanpa dependensi berat
+* **Root domain short links** — clean URLs like `https://domain.com/promo2026`
+* **WP Admin management** — a clean, easy-to-use "Manage Links" page
+* **Front-end dashboard** — manage links from `/short/dashboard` as well
+* **Instant search** — filter aliases or destination URLs in real time
+* **Auto-expire** — set an expiration date on any link
+* **Real-time statistics** — link count, active links, and total clicks update automatically
+* **Feedback via email** — users can send suggestions or bug reports directly to the admin
+* **Lightweight** — small CSS/JS, system fonts, no heavy dependencies
 
-= Kemudahan penggunaan =
+= Getting Started =
 
-1. Aktifkan plugin lalu buka menu **Ringkas** di wp-admin.
-2. Klik **Buat tautan**, masukkan URL tujuan, lalu simpan.
-3. Salin tautan pendek yang dihasilkan dan bagikan.
-4. Kelola, edit, atau hapus tautan kapan saja.
+1. Activate the plugin, then open the **Yasyes Short Link** menu in wp-admin.
+2. Click **Create Link**, enter a destination URL, and save.
+3. Copy the generated short link and share it.
+4. Manage, edit, or delete links at any time.
 
 == Installation ==
 
-1. Unduh plugin dan ekstrak ke folder `wp-content/plugins/ringkas/`, atau unggah berkas `.zip` lewat **Plugins → Add New → Upload Plugin**.
-2. Aktifkan plugin melalui menu **Plugins** di wp-admin.
-3. Buka menu **Ringkas** untuk mulai membuat tautan pendek.
-4. (Opsional) Daftarkan akun front-end lewat `/short/register` untuk mengelola dari `/short/dashboard`.
+1. Download the plugin and extract it into `wp-content/plugins/yasyes-shortlink/`, or upload the `.zip` file via **Plugins → Add New → Upload Plugin**.
+2. Activate the plugin through the **Plugins** menu in wp-admin.
+3. Open the **Yasyes Short Link** menu to start creating short links.
 
 == Frequently Asked Questions ==
 
-= Bagaimana cara membuat tautan pendek? =
+= How do I create a short link? =
 
-Buka menu **Ringkas** di wp-admin, klik tombol **Buat tautan**, masukkan URL tujuan, lalu klik **Simpan**. Tautan pendek langsung dibuat.
+Open the **Yasyes Short Link** menu in wp-admin, click the **Create Link** button, enter a destination URL, and click **Save**. The short link is created immediately.
 
-= Di mana tautan pendek di-host? =
+= Where are the short links hosted? =
 
-Langsung di root domain WordPress Anda, misalnya `https://domain.com/gambar`.
+Directly on your WordPress root domain, e.g. `https://domain.com/image`.
 
-= Bagaimana cara membuat tautan kedaluwarsa? =
+= How do I set an expiring link? =
 
-Saat membuat atau mengedit tautan, isi kolom **Kedaluwarsa** dengan tanggal dan waktu yang diinginkan. Tautan otomatis dinonaktifkan setelah waktu tersebut.
+When creating or editing a link, fill in the **Expires** field with the desired date and time. The link is automatically disabled after that time.
 
-= Apakah plugin ini memakai layanan pihak ketiga? =
+= Does this plugin use any third-party services? =
 
-Tidak. Semua tautan dan statistik disimpan di database WordPress Anda sendiri.
+No. All links and statistics are stored in your own WordPress database.
 
-= Bagaimana cara memberi feedback? =
+= How do I send feedback? =
 
-Gunakan tombol **Feedback** yang ada di halaman Kelola Tautan (wp-admin atau dashboard front-end). Pesan Anda akan dikirim ke email admin.
+Use the **Feedback** button on the Manage Links page (wp-admin or front-end dashboard). Your message will be sent to the admin via email.
 
 == Screenshots ==
 
-1. Halaman Kelola Tautan di wp-admin.
-2. Dashboard front-end di /short/dashboard.
+1. Manage Links page in wp-admin.
+2. Front-end dashboard at /short/dashboard.
 
 == Changelog ==
 
 = 1.4.0 =
-* Perombakan tampilan halaman "Kelola Tautan" agar selaras dengan halaman Dokumentasi.
-* Penambahan fitur kirim feedback via email.
-* Penambahan tautan "Buy me a coffee" dan kredit pengembang.
-* Optimasi dan pembersihan CSS agar plugin lebih ringan.
-* Pengurangan frekuensi polling statistik untuk meringankan beban server.
+* Redesigned the "Manage Links" page to align with the Documentation page.
+* Added email feedback feature.
+* Added "Buy me a coffee" link and developer credit.
+* CSS optimization and cleanup for a lighter plugin.
+* Reduced statistics polling frequency to ease server load.
 
 == Upgrade Notice ==
 
 = 1.4.0 =
-Pembaruan tampilan dan penambahan fitur feedback. Sebaiknya bersihkan cache browser setelah memperbarui.
+UI refresh and feedback feature. Clear your browser cache after updating.

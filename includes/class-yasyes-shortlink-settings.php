@@ -1,24 +1,24 @@
-<?php
+﻿<?php
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
 /**
- * Opsi plugin + halaman Pengaturan di wp-admin.
+ * Plugin options and settings page in wp-admin.
  */
-class Ringkas_Settings {
+class Yasyes_Shortlink_Settings {
 
-	public const OPTION_SITE_LABEL    = 'ringkas_site_label';
-	public const OPTION_PUBLIC_ACCESS = 'ringkas_public_access';
+	public const OPTION_SITE_LABEL    = 'yasyes_shortlink_site_label';
+	public const OPTION_PUBLIC_ACCESS = 'yasyes_shortlink_public_access';
 
 	public static function register(): void {
 		add_action( 'admin_init', array( __CLASS__, 'register_settings' ) );
 	}
 
 	/**
-	 * Label situs untuk teks tampilan (login, dsb).
-	 * Default: host domain, mis. "yasyes.id" → bisa diganti di Pengaturan.
+	 * Site label for display text (login, etc.).
+	 * Default: domain host. Can be changed in Settings.
 	 */
 	public static function site_label(): string {
 		$label = sanitize_text_field( (string) get_option( self::OPTION_SITE_LABEL, '' ) );
@@ -31,7 +31,7 @@ class Ringkas_Settings {
 	}
 
 	/**
-	 * Bila aktif, dashboard /short/dashboard terbuka untuk siapa pun tanpa akun.
+	 * When active, the /short/dashboard is open to anyone without an account.
 	 */
 	public static function is_public(): bool {
 		return (bool) get_option( self::OPTION_PUBLIC_ACCESS, false );
@@ -39,7 +39,7 @@ class Ringkas_Settings {
 
 	public static function register_settings(): void {
 		register_setting(
-			'ringkas_settings',
+			'yasyes_shortlink_settings',
 			self::OPTION_SITE_LABEL,
 			array(
 				'type'              => 'string',
@@ -49,7 +49,7 @@ class Ringkas_Settings {
 		);
 
 		register_setting(
-			'ringkas_settings',
+			'yasyes_shortlink_settings',
 			self::OPTION_PUBLIC_ACCESS,
 			array(
 				'type'              => 'boolean',
@@ -59,27 +59,27 @@ class Ringkas_Settings {
 		);
 
 		add_settings_section(
-			'ringkas_section_general',
-			'Umum',
+			'yasyes_shortlink_section_general',
+			'General',
 			'__return_false',
-			'ringkas-settings'
+			'yasyes-shortlink-settings'
 		);
 
 		add_settings_field(
 			self::OPTION_SITE_LABEL,
-			'Nama web / label',
+			'Site name / label',
 			array( __CLASS__, 'render_site_label_field' ),
-			'ringkas-settings',
-			'ringkas_section_general',
+			'yasyes-shortlink-settings',
+			'yasyes_shortlink_section_general',
 			array( 'label_for' => self::OPTION_SITE_LABEL )
 		);
 
 		add_settings_field(
 			self::OPTION_PUBLIC_ACCESS,
-			'Akses tanpa login',
+			'Public access',
 			array( __CLASS__, 'render_public_access_field' ),
-			'ringkas-settings',
-			'ringkas_section_general'
+			'yasyes-shortlink-settings',
+			'yasyes_shortlink_section_general'
 		);
 	}
 
@@ -94,15 +94,15 @@ class Ringkas_Settings {
 			esc_attr( self::OPTION_SITE_LABEL ),
 			$value
 		);
-		echo '<p class="description">Dipakai pada halaman login dan teks tampilan. Kosongkan untuk memakai nama domain.</p>';
+		echo '<p class="description">Used on the login page and display text. Leave empty to use the domain name.</p>';
 	}
 
 	public static function render_public_access_field(): void {
 		printf(
-			'<label><input type="checkbox" name="%1$s" value="1" %2$s> Buka dashboard tanpa akun</label>',
+			'<label><input type="checkbox" name="%1$s" value="1" %2$s> Open dashboard without login</label>',
 			esc_attr( self::OPTION_PUBLIC_ACCESS ),
 			checked( self::is_public(), true, false )
 		);
-		echo '<p class="description">Siapa pun bisa membuka <code>/short/dashboard</code> dan mengelola tautan tanpa login. Halaman login otomatis dilewati.</p>';
+		echo '<p class="description">Anyone can open <code>/short/dashboard</code> and manage links without logging in. The login page is automatically skipped.</p>';
 	}
 }

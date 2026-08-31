@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -8,11 +8,11 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Intercept request di parse_request — sebelum WP_Query utama jalan.
  *
  * Kenapa parse_request, bukan rewrite rule 'top': rule root-level `^([A-Za-z0-9]{3,20})/?$`
- * akan meng-intercept slug satu kata milik post/page existing (mis. /about) dan
- * membuatnya 404. Dengan parse_request, kita hanya berhenti bila short_code ADA di tabel;
+ * will intercept a single-word slug belonging to an existing post/page (e.g. /about) and
+ * preventing 404 errors. With parse_request we only stop if the short_code exists in the table;
  * selain itu WordPress lanjut normal (FR-5).
  */
-class Ringkas_Router {
+class Yasyes_Shortlink_Router {
 
 	public static function dispatch( WP $wp ): void {
 		if ( is_admin() || wp_doing_ajax() || wp_doing_cron() ) {
@@ -49,22 +49,19 @@ class Ringkas_Router {
 
 		switch ( $sub ) {
 			case '':
-				Ringkas_Short_Pages::login();
-				break;
-			case 'register':
-				Ringkas_Short_Pages::register();
+				Yasyes_Shortlink_Short_Pages::login();
 				break;
 			case 'forgot-password':
-				Ringkas_Short_Pages::forgot_password();
+				Yasyes_Shortlink_Short_Pages::forgot_password();
 				break;
 			case 'reset-password':
-				Ringkas_Short_Pages::reset_password();
+				Yasyes_Shortlink_Short_Pages::reset_password();
 				break;
 			case 'logout':
-				Ringkas_Short_Pages::logout();
+				Yasyes_Shortlink_Short_Pages::logout();
 				break;
 			case 'dashboard':
-				Ringkas_Short_Pages::dashboard();
+				Yasyes_Shortlink_Short_Pages::dashboard();
 				break;
 			default:
 				wp_safe_redirect( home_url( '/short' ), 302 );
@@ -73,23 +70,23 @@ class Ringkas_Router {
 	}
 
 	private static function try_redirect_code( string $code ): void {
-		if ( ! Ringkas_Validator::is_valid_format( $code ) || Ringkas_Validator::is_reserved( $code ) ) {
+		if ( ! Yasyes_Shortlink_Validator::is_valid_format( $code ) || Yasyes_Shortlink_Validator::is_reserved( $code ) ) {
 			return;
 		}
 
-		$link = Ringkas_Link_Model::find_by_code( $code );
+		$link = Yasyes_Shortlink_Link_Model::find_by_code( $code );
 		if ( ! $link ) {
 			return; // Bukan short link → biarkan WordPress resolve normal.
 		}
 
-		if ( Ringkas_Link_Model::is_expired( $link ) ) {
+		if ( Yasyes_Shortlink_Link_Model::is_expired( $link ) ) {
 			status_header( 410 );
 			nocache_headers();
-			include RINGKAS_PLUGIN_DIR . 'templates/link-expired.php';
+			include YASYES_SHORTLINK_PLUGIN_DIR . 'templates/link-expired.php';
 			exit;
 		}
 
-		Ringkas_Link_Model::increment_click( (int) $link->id );
+		Yasyes_Shortlink_Link_Model::increment_click( (int) $link->id );
 		wp_redirect( esc_url_raw( $link->original_url ), 302 );
 		exit;
 	}

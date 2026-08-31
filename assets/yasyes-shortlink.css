@@ -1,4 +1,4 @@
-/* Ringkas — CSS ringan, system font. */
+﻿/* Yasyes Short Link — CSS ringan, system font. */
 *, *::before, *::after { box-sizing: border-box; }
 
 :root {
@@ -16,7 +16,7 @@
 	--error-text: #b91c1c;
 }
 
-.ringkas-body {
+.ys-body {
 	margin: 0;
 	background: var(--bg);
 	color: var(--text);
@@ -24,7 +24,7 @@
 }
 
 /* ---------- Dokumentasi (wp-admin) ---------- */
-.ringkas-docs { max-width: 860px; }
+.ys-docs { max-width: 860px; }
 
 .doc-hero {
 	background: var(--card);
@@ -88,7 +88,7 @@
 	padding: 14px 16px;
 }
 .doc-card h3 { margin: 0 0 6px; font-size: 14px; display: flex; align-items: center; gap: 8px; }
-.doc-card h3 i { color: var(--primary); width: 16px; text-align: center; }
+.doc-card h3 .dashicons { color: var(--primary); font-size: 18px; width: auto; height: auto; }
 .doc-card p { margin: 0; font-size: 13.5px; color: var(--muted); }
 
 .doc-table {
@@ -115,7 +115,7 @@
 	color: var(--muted);
 }
 .doc-table tbody tr:last-child td { border-bottom: none; }
-.doc-table i { color: var(--primary); }
+.doc-table .dashicons { color: var(--primary); font-size: 18px; width: auto; height: auto; }
 
 .doc-note { margin-top: 10px; font-size: 13px; color: var(--muted); }
 
@@ -317,7 +317,7 @@ a { color: var(--primary); }
 }
 .btn-icon:hover { background: #f3f4f6; color: var(--text); }
 .btn-icon-danger:hover { background: var(--error-bg); color: var(--danger); }
-.btn-icon i { width: 1em; }
+.btn-icon .dashicons { width: 18px; height: 18px; font-size: 18px; }
 
 .live-dot {
 	display: inline-block;
@@ -350,25 +350,25 @@ body.is-updating #table-wrap { opacity: 0.6; }
 	.link-table th:nth-child(2), .link-table td:nth-child(2) { display: none; }
 }
 
-/* ---------- Kelola Tautan (wp-admin) ---------- */
-body.toplevel_page_ringkas #wpcontent { padding-left: 0; padding-right: 0; }
-.ringkas-admin .wrap { max-width: none; margin: 0; padding: 14px 20px 48px; }
-.ringkas-manage .doc-hero { margin: 0 0 16px; }
-.ringkas-manage .doc-hero p { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; font-size: 14px; margin-top: 4px; }
-.ringkas-manage .doc-section { margin-top: 0; background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 0 0 2px; }
-.ringkas-manage .toolbar { padding: 16px 22px 12px; }
-.ringkas-manage .search-bar input[type="search"] { max-width: 480px; min-height: 40px; }
-.ringkas-manage .table-wrap { width: 100%; }
-.ringkas-manage .target-url { max-width: 560px; }
-.ringkas-manage .empty { padding: 48px 0; font-size: 14px; color: var(--muted); }
-.ringkas-manage .pagination { justify-content: center; padding: 12px 22px 14px; margin-top: 0; }
-.ringkas-manage .link-table tbody tr:hover { background: #f9fafb; }
+/* ---------- Manage Links (wp-admin) ---------- */
+body.toplevel_page_yasyes-shortlink #wpcontent { padding-left: 0; padding-right: 0; }
+.ys-admin .wrap { max-width: none; margin: 0; padding: 14px 20px 48px; }
+.ys-manage .doc-hero { margin: 0 0 16px; }
+.ys-manage .doc-hero p { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; font-size: 14px; margin-top: 4px; }
+.ys-manage .doc-section { margin-top: 0; background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 0 0 2px; }
+.ys-manage .toolbar { padding: 16px 22px 12px; }
+.ys-manage .search-bar input[type="search"] { max-width: 480px; min-height: 40px; }
+.ys-manage .table-wrap { width: 100%; }
+.ys-manage .target-url { max-width: 560px; }
+.ys-manage .empty { padding: 48px 0; font-size: 14px; color: var(--muted); }
+.ys-manage .pagination { justify-content: center; padding: 12px 22px 14px; margin-top: 0; }
+.ys-manage .link-table tbody tr:hover { background: #f9fafb; }
 
-.ringkas-footer-credit { text-align: center; font-size: 13px; color: var(--muted); margin: 24px 0 8px; }
-.ringkas-footer-credit a { color: var(--muted); text-decoration: none; }
-.ringkas-footer-credit a:hover { color: var(--text); }
-.ringkas-footer-credit i { vertical-align: -1px; }
-.ringkas-footer-link {
+.ys-footer-credit { text-align: center; font-size: 13px; color: var(--muted); margin: 24px 0 8px; }
+.ys-footer-credit a { color: var(--muted); text-decoration: none; }
+.ys-footer-credit a:hover { color: var(--text); }
+.ys-footer-credit .dashicons { vertical-align: -4px; font-size: 16px; }
+.ys-footer-link {
 	background: none;
 	border: none;
 	color: var(--muted);
@@ -377,8 +377,8 @@ body.toplevel_page_ringkas #wpcontent { padding-left: 0; padding-right: 0; }
 	font-size: 13px;
 	padding: 0;
 }
-.ringkas-footer-link:hover { color: var(--text); }
-.ringkas-footer-link i { vertical-align: -1px; }
+.ys-footer-link:hover { color: var(--text); }
+.ys-footer-link .dashicons { vertical-align: -4px; font-size: 16px; }
 
 .modal textarea {
 	width: 100%;

@@ -1,15 +1,15 @@
-<?php
+﻿<?php
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-class Ringkas_Link_Model {
+class Yasyes_Shortlink_Link_Model {
 
 	public static function table(): string {
 		global $wpdb;
 
-		return $wpdb->prefix . 'ringkas_links';
+		return $wpdb->prefix . 'yasyes_shortlink_links';
 	}
 
 	/**
@@ -29,7 +29,7 @@ class Ringkas_Link_Model {
 	public const PER_PAGE = 20;
 
 	/**
-	 * Daftar tautan dengan pencarian dan pagination.
+	 * List links with search and pagination.
 	 *
 	 * @return array{items: object[], total: int}
 	 */
@@ -66,8 +66,8 @@ class Ringkas_Link_Model {
 	}
 
 	/**
-	 * Statistik ringkas lewat agregat SQL — tanpa memuat semua baris.
-	 * Jam pembanding memakai clock PHP agar konsisten dengan is_expired().
+	 * Aggregate statistics via SQL — no need to load all rows.
+	 * Clock uses PHP time to stay consistent with is_expired().
 	 *
 	 * @return array{total_links:int, total_clicks:int, active:int}
 	 */
@@ -102,7 +102,7 @@ class Ringkas_Link_Model {
 
 	/**
 	 * @param array{original_url:string, short_code:string, expired_at:?string} $data
-	 * @return int|WP_Error ID tautan baru.
+	 * @return int|WP_Error New link ID.
 	 */
 	public static function create( array $data ) {
 		global $wpdb;
@@ -111,11 +111,11 @@ class Ringkas_Link_Model {
 		if ( $data['expired_at'] ) {
 			$expired_at = self::normalize_datetime( $data['expired_at'] );
 			if ( null === $expired_at ) {
-				return new WP_Error( 'ringkas_invalid_date', 'Format tanggal kedaluwarsa tidak valid.' );
+				return new WP_Error( 'yasyes_shortlink_invalid_date', 'Invalid expiry date format.' );
 			}
 		}
 
-		// Kolom expired_at hanya diisi bila ada — kosong berarti NULL (tidak pernah kedaluwarsa).
+		// expired_at is only set when provided — empty means NULL (never expires).
 		$values = array(
 			'original_url' => $data['original_url'],
 			'short_code'   => $data['short_code'],
@@ -133,7 +133,7 @@ class Ringkas_Link_Model {
 		$inserted = $wpdb->insert( self::table(), $values, $format );
 
 		if ( ! $inserted ) {
-			return new WP_Error( 'ringkas_insert_failed', 'Gagal menyimpan tautan.' );
+			return new WP_Error( 'yasyes_shortlink_insert_failed', 'Failed to save the link.' );
 		}
 
 		return (int) $wpdb->insert_id;
@@ -141,7 +141,7 @@ class Ringkas_Link_Model {
 
 	/**
 	 * @param array{original_url?:string, short_code?:string, expired_at:?string} $data
-	 *   expired_at null berarti hapus tanggal kedaluwarsa; key tidak ada berarti tidak diubah.
+	 *   expired_at null clears the expiry date; key absent means no change.
 	 */
 	public static function update( int $id, array $data ): bool {
 		global $wpdb;
@@ -182,7 +182,7 @@ class Ringkas_Link_Model {
 		return (bool) $wpdb->delete( self::table(), array( 'id' => $id ), array( '%d' ) );
 	}
 
-	// Atomic increment di level SQL — bebas race condition.
+	// Atomic increment at SQL level — race-condition safe.
 	public static function increment_click( int $id ): void {
 		global $wpdb;
 

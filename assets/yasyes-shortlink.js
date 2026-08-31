@@ -1,7 +1,7 @@
-(function () {
+﻿(function () {
 	'use strict';
 
-	var config = window.RingkasConfig || {};
+	var config = window.YasyesShortlinkConfig || {};
 	var listUrl = window.location.href.split('#')[0];
 
 	var state = {
@@ -30,7 +30,7 @@
 		statTotal: document.getElementById('stat-total'),
 		statClicks: document.getElementById('stat-clicks'),
 		liveDot: document.getElementById('live-dot'),
-		toastEl: document.getElementById('ringkas-toast')
+		toastEl: document.getElementById('ys-toast')
 	};
 
 	var isAppPage = Boolean(els.tbody && els.linkModal);
@@ -86,11 +86,11 @@
 			credentials: 'same-origin'
 		}).then(function (response) {
 			return response.json().catch(function () {
-				throw new Error('Respons tidak valid dari server.');
+				throw new Error('Invalid response from server.');
 			});
 		}).then(function (json) {
 			if (!json.success) {
-				throw new Error(json.data && json.data.message ? json.data.message : 'Terjadi kesalahan.');
+				throw new Error(json.data && json.data.message ? json.data.message : 'An error occurred.');
 			}
 			return json.data;
 		});
@@ -133,7 +133,7 @@
 
 	function rowHtml(item) {
 		var expiry = item.expiry_text ? escapeHtml(item.expiry_text) : '&mdash;';
-		var badge = item.expired ? '<span class="badge badge-danger">kedaluwarsa</span>' : '';
+		var badge = item.expired ? '<span class="badge badge-danger">expired</span>' : '';
 
 		return '<tr data-id="' + item.id + '">' +
 			'<td><a class="short-code" href="' + escapeHtml(item.short_url) + '" target="_blank" rel="noopener">/' +
@@ -143,12 +143,12 @@
 			'<td class="col-num">' + formatNumber(item.clicks) + '</td>' +
 			'<td>' + expiry + '</td>' +
 			'<td class="col-actions">' +
-				'<button type="button" class="btn-icon" data-copy="' + escapeHtml(item.short_url) + '" title="Salin tautan">' +
-					'<i class="fa-regular fa-copy" aria-hidden="true"></i></button>' +
+				'<button type="button" class="btn-icon" data-copy="' + escapeHtml(item.short_url) + '" title="Copy link">' +
+					'<span class="dashicons dashicons-admin-page"></span></button>' +
 				'<button type="button" class="btn-icon" data-edit="' + item.id + '" title="Edit">' +
-					'<i class="fa-solid fa-pen-to-square" aria-hidden="true"></i></button>' +
-				'<button type="button" class="btn-icon btn-icon-danger" data-delete="' + item.id + '" title="Hapus">' +
-					'<i class="fa-solid fa-trash-can" aria-hidden="true"></i></button>' +
+					'<span class="dashicons dashicons-edit"></span></button>' +
+				'<button type="button" class="btn-icon btn-icon-danger" data-delete="' + item.id + '" title="Delete">' +
+					'<span class="dashicons dashicons-trash"></span></button>' +
 			'</td>' +
 		'</tr>';
 	}
@@ -189,8 +189,8 @@
 		empty.className = 'muted empty';
 		empty.id = 'empty-state';
 		empty.textContent = state.search
-			? 'Tidak ada hasil untuk pencarian ini.'
-			: 'Belum ada tautan. Klik "Buat tautan" untuk memulai.';
+			? 'No results found.'
+			: 'No links yet. Click "Create link" to get started.';
 		els.tableWrap.appendChild(empty);
 	}
 
@@ -241,7 +241,7 @@
 
 		if (!options.silent) document.body.classList.add('is-updating');
 
-		return post('ringkas_list', { s: state.search, paged: state.page })
+		return post('yasyes_shortlink_list', { s: state.search, paged: state.page })
 			.then(function (data) {
 				var fingerprint = fingerprintOf(data);
 
@@ -275,7 +275,7 @@
 		if (isEdit && !item) return;
 
 		state.pendingDeleteId = 0;
-		els.formTitle.textContent = isEdit ? 'Edit tautan' : 'Buat tautan';
+		els.formTitle.textContent = isEdit ? 'Edit link' : 'Create link';
 		els.linkForm.elements.original_url.value = isEdit ? item.original_url : '';
 		els.linkForm.elements.alias.value = isEdit ? item.short_code : '';
 		els.linkForm.elements.expired_at.value = isEdit ? (item.expiry_raw || '') : '';
@@ -291,7 +291,7 @@
 		var submitButton = els.linkForm.querySelector('[type="submit"]');
 		submitButton.disabled = true;
 
-		post('ringkas_save', {
+		post('yasyes_shortlink_save', {
 			link_id: els.linkForm.dataset.editId || 0,
 			original_url: els.linkForm.elements.original_url.value,
 			alias: els.linkForm.elements.alias.value,
@@ -324,7 +324,7 @@
 
 		els.deleteConfirm.disabled = true;
 
-		post('ringkas_delete', { link_id: id }).then(function (data) {
+		post('yasyes_shortlink_delete', { link_id: id }).then(function (data) {
 			closeOverlay(els.deleteModal);
 			toast(data.message);
 
@@ -386,7 +386,7 @@
 		var copyButton = event.target.closest('[data-copy]');
 		if (copyButton) {
 			navigator.clipboard.writeText(copyButton.getAttribute('data-copy'))
-				.then(function () { toast('Tautan disalin'); });
+				.then(function () { toast('Link copied'); });
 			return;
 		}
 
@@ -440,13 +440,13 @@
 			var message = document.getElementById('feedback-message').value.trim();
 
 			if (message.length < 10) {
-				toast('Pesan minimal 10 karakter.');
+				toast('Message must be at least 10 characters.');
 				return;
 			}
 
 			submitBtn.disabled = true;
 
-			post('ringkas_feedback', { message: message })
+			post('yasyes_shortlink_feedback', { message: message })
 				.then(function (data) {
 					modal.hidden = true;
 					form.reset();

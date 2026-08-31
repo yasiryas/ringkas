@@ -1,10 +1,10 @@
-<?php
+﻿<?php
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-class Ringkas_Activator {
+class Yasyes_Shortlink_Activator {
 
 	public static function activate(): void {
 		self::create_table();
@@ -15,7 +15,7 @@ class Ringkas_Activator {
 	private static function create_table(): void {
 		global $wpdb;
 
-		$table           = $wpdb->prefix . 'ringkas_links';
+		$table           = $wpdb->prefix . 'yasyes_shortlink_links';
 		$charset_collate = $wpdb->get_charset_collate();
 
 		$sql = "CREATE TABLE $table (
@@ -36,9 +36,9 @@ class Ringkas_Activator {
 	}
 
 	private static function seed_default_options(): void {
-		if ( false === get_option( Ringkas_Settings::OPTION_SITE_LABEL, false ) ) {
+		if ( false === get_option( Yasyes_Shortlink_Settings::OPTION_SITE_LABEL, false ) ) {
 			update_option(
-				Ringkas_Settings::OPTION_SITE_LABEL,
+				Yasyes_Shortlink_Settings::OPTION_SITE_LABEL,
 				(string) wp_parse_url( home_url(), PHP_URL_HOST )
 			);
 		}
@@ -47,7 +47,7 @@ class Ringkas_Activator {
 	private static function grant_admin_capability(): void {
 		$admin = get_role( 'administrator' );
 		if ( $admin ) {
-			$admin->add_cap( 'manage_ringkas_links' );
+			$admin->add_cap( 'manage_yasyes_shortlink_links' );
 		}
 	}
 }
