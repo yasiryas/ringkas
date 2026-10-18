@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -67,7 +67,7 @@ class Yasyes_Shortlink_Link_Model {
 
 	/**
 	 * Aggregate statistics via SQL — no need to load all rows.
-	 * Clock uses PHP time to stay consistent with is_expired().
+	 * Clock uses current_time() so it matches expired_at, stored in site timezone.
 	 *
 	 * @return array{total_links:int, total_clicks:int, active:int}
 	 */
@@ -81,7 +81,7 @@ class Yasyes_Shortlink_Link_Model {
 					COALESCE(SUM(click_count), 0) AS total_clicks,
 					SUM(CASE WHEN expired_at IS NULL OR expired_at > %s THEN 1 ELSE 0 END) AS active
 				FROM ' . self::table(),
-				date( 'Y-m-d H:i:s' )
+				current_time( 'mysql' )
 			)
 		);
 
@@ -195,12 +195,27 @@ class Yasyes_Shortlink_Link_Model {
 	}
 
 	public static function is_expired( object $link ): bool {
-		return ! empty( $link->expired_at ) && strtotime( $link->expired_at ) < time();
+		return ! empty( $link->expired_at ) && self::expiry_timestamp( $link->expired_at ) < time();
+	}
+
+	/**
+	 * Expiry stored in site timezone — parse it with the same timezone to get a real instant.
+	 */
+	public static function expiry_timestamp( string $expired_at ): int {
+		return ( new DateTimeImmutable( $expired_at, wp_timezone() ) )->getTimestamp();
+	}
+
+	public static function format_expiry( string $expired_at ): string {
+		return date_i18n( 'd M Y H:i', self::expiry_timestamp( $expired_at ) );
 	}
 
 	private static function normalize_datetime( string $value ): ?string {
-		$timestamp = strtotime( $value );
+		$value = trim( $value );
 
-		return false === $timestamp ? null : date( 'Y-m-d H:i:s', $timestamp );
+		if ( '' === $value || false === strtotime( $value ) ) {
+			return null;
+		}
+
+		return ( new DateTimeImmutable( $value, wp_timezone() ) )->format( 'Y-m-d H:i:s' );
 	}
 }

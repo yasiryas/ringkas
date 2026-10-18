@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -88,18 +88,23 @@ class Yasyes_Shortlink_Admin_Menu {
 			wp_die( 'You do not have access.' );
 		}
 
-		$result      = Yasyes_Shortlink_Link_Model::paginate( '', 1 );
+		$error = null;
+		if ( 'POST' === $_SERVER['REQUEST_METHOD'] ) {
+			$error = Yasyes_Shortlink_Link_Service::handle_post_request( menu_page_url( self::PAGE_SLUG, false ) );
+		}
+
+		$search = sanitize_text_field( wp_unslash( $_GET['s'] ?? '' ) );
+		$page   = max( 1, absint( $_GET['paged'] ?? 1 ) );
+
+		$result      = Yasyes_Shortlink_Link_Model::paginate( $search, $page );
 		$links       = $result['items'];
 		$total       = $result['total'];
 		$total_pages = (int) ceil( $total / Yasyes_Shortlink_Link_Model::PER_PAGE );
 		$stats       = Yasyes_Shortlink_Link_Model::stats();
-		$search      = '';
-		$page        = 1;
 		$list_url    = menu_page_url( self::PAGE_SLUG, false );
 
 		include YASYES_SHORTLINK_PLUGIN_DIR . 'templates/admin-page.php';
 	}
-
 
 	public static function render_settings_page(): void {
 		if ( ! current_user_can( 'manage_options' ) ) {
@@ -165,7 +170,7 @@ class Yasyes_Shortlink_Admin_Menu {
 				<div class="doc-grid">
 					<div class="doc-card">
 						<h3><span class="dashicons dashicons-tag" aria-hidden="true"></span> Alias</h3>
-						<p>3&ndash;20 alphanumeric characters, no spaces. Must be unique and must not conflict
+						<p>3&ndash;20 letters, numbers, hyphens or underscores, no spaces. Must be unique and must not conflict
 						with existing page/post slugs. Leave empty = auto-generated.</p>
 					</div>
 					<div class="doc-card">
@@ -211,7 +216,7 @@ class Yasyes_Shortlink_Admin_Menu {
 					</tbody>
 				</table>
 				<p class="doc-note">Search works as you type (alias &amp; destination URL),
-				list is limited to 20/page, and data refreshes automatically every 5 seconds without reload.</p>
+				list is limited to 20/page, and data refreshes automatically every 30 seconds without reload.</p>
 			</section>
 
 			<section class="doc-section">

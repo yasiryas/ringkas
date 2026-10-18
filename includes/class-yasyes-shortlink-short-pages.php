@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -126,6 +126,12 @@ class Yasyes_Shortlink_Short_Pages {
 	}
 
 	public static function logout(): void {
+		if ( ! isset( $_GET['_wpnonce'] )
+			|| ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ), 'yasyes_shortlink_logout' ) ) {
+			wp_safe_redirect( home_url( '/short' ), 302 );
+			exit;
+		}
+
 		wp_logout();
 		wp_safe_redirect( home_url( '/short' ), 302 );
 		exit;
@@ -137,8 +143,9 @@ class Yasyes_Shortlink_Short_Pages {
 			exit;
 		}
 
+		$error = null;
 		if ( 'POST' === $_SERVER['REQUEST_METHOD'] ) {
-			self::handle_dashboard_post();
+			$error = Yasyes_Shortlink_Link_Service::handle_post_request( home_url( '/short/dashboard' ) );
 		}
 
 		$search = sanitize_text_field( wp_unslash( $_GET['s'] ?? '' ) );
@@ -161,34 +168,6 @@ class Yasyes_Shortlink_Short_Pages {
 		}
 
 		return is_user_logged_in() && current_user_can( 'manage_options' );
-	}
-
-	private static function handle_dashboard_post(): void {
-		$action   = sanitize_key( wp_unslash( $_POST['action_type'] ?? '' ) );
-		$back_url = home_url( '/short/dashboard' );
-
-		switch ( $action ) {
-			case 'create':
-				if ( wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['_wpnonce'] ?? '' ) ), 'yasyes_shortlink_link_save' ) ) {
-					Yasyes_Shortlink_Link_Service::create_from_request();
-				}
-				break;
-
-			case 'update':
-				if ( wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['_wpnonce'] ?? '' ) ), 'yasyes_shortlink_link_save' ) ) {
-					Yasyes_Shortlink_Link_Service::update_from_request();
-				}
-				break;
-
-			case 'delete':
-				if ( wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['_wpnonce'] ?? '' ) ), 'yasyes_shortlink_link_delete' ) ) {
-					Yasyes_Shortlink_Link_Model::delete( absint( $_POST['link_id'] ?? 0 ) );
-				}
-				break;
-		}
-
-		wp_safe_redirect( $back_url, 302 );
-		exit;
 	}
 
 	private static function enqueue_assets(): void {

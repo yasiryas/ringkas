@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -6,7 +6,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class Yasyes_Shortlink_Validator {
 
-	public const CODE_PATTERN = '/^[A-Za-z0-9]{3,20}$/';
+	public const CODE_PATTERN = '/^[A-Za-z0-9_-]{3,20}$/';
 
 	// WordPress and plugin paths — cannot be used as short_code.
 	public const RESERVED = array(
@@ -67,7 +67,7 @@ class Yasyes_Shortlink_Validator {
 			return new WP_Error( 'yasyes_shortlink_empty_code', 'Alias cannot be empty.' );
 		}
 		if ( ! self::is_valid_format( $code ) ) {
-			return new WP_Error( 'yasyes_shortlink_invalid_format', 'Alias may only contain letters/numbers, 3-20 characters.' );
+			return new WP_Error( 'yasyes_shortlink_invalid_format', 'Alias may only contain letters, numbers, hyphens and underscores, 3-20 characters.' );
 		}
 		if ( self::is_reserved( $code ) || self::is_slug_taken_by_wp_content( $code ) ) {
 			return new WP_Error( 'yasyes_shortlink_slug_conflict', 'This code conflicts with an existing page/slug on the site.' );

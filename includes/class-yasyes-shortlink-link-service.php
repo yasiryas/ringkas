@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -8,6 +8,52 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Save/update logic for links from $_POST — used by both PHP fallback and AJAX.
  */
 class Yasyes_Shortlink_Link_Service {
+
+	/**
+	 * Handle a non-AJAX create/update/delete submit.
+	 * Redirects back on success (PRG) and never returns; returns the failure message otherwise.
+	 */
+	public static function handle_post_request( string $back_url ): string {
+		$action          = sanitize_key( wp_unslash( $_POST['action_type'] ?? '' ) );
+		$nonce           = sanitize_text_field( wp_unslash( $_POST['_wpnonce'] ?? '' ) );
+		$invalid_session = 'Your session expired. Refresh the page and try again.';
+
+		switch ( $action ) {
+			case 'create':
+				if ( ! wp_verify_nonce( $nonce, 'yasyes_shortlink_link_save' ) ) {
+					return $invalid_session;
+				}
+				$result = self::create_from_request();
+				break;
+
+			case 'update':
+				if ( ! wp_verify_nonce( $nonce, 'yasyes_shortlink_link_save' ) ) {
+					return $invalid_session;
+				}
+				$result = self::update_from_request();
+				break;
+
+			case 'delete':
+				if ( ! wp_verify_nonce( $nonce, 'yasyes_shortlink_link_delete' ) ) {
+					return $invalid_session;
+				}
+				$result = Yasyes_Shortlink_Link_Model::delete( absint( $_POST['link_id'] ?? 0 ) )
+					? null
+					: new WP_Error( 'yasyes_shortlink_delete_failed', 'Failed to delete the link.' );
+				break;
+
+			default:
+				$result = null;
+				break;
+		}
+
+		if ( is_wp_error( $result ) ) {
+			return $result->get_error_message();
+		}
+
+		wp_safe_redirect( $back_url, 302 );
+		exit;
+	}
 
 	/**
 	 * @return int|WP_Error New link ID.

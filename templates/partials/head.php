@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * @var string $ys_title Browser tab title.
  */

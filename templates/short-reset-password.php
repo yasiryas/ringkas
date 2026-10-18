@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * @var WP_User $user
  * @var string  $error

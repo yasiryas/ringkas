@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -7,7 +7,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Intercept request di parse_request — sebelum WP_Query utama jalan.
  *
- * Kenapa parse_request, bukan rewrite rule 'top': rule root-level `^([A-Za-z0-9]{3,20})/?$`
+ * Kenapa parse_request, bukan rewrite rule 'top': rule root-level `^([A-Za-z0-9_-]{3,20})/?$`
  * will intercept a single-word slug belonging to an existing post/page (e.g. /about) and
  * preventing 404 errors. With parse_request we only stop if the short_code exists in the table;
  * selain itu WordPress lanjut normal (FR-5).
@@ -36,7 +36,6 @@ class Yasyes_Shortlink_Router {
 			return;
 		}
 
-		show_admin_bar( false );
 		self::try_redirect_code( $path );
 	}
 
@@ -78,6 +77,13 @@ class Yasyes_Shortlink_Router {
 		if ( ! $link ) {
 			return; // Bukan short link → biarkan WordPress resolve normal.
 		}
+
+		// Slug milik post/page/term menang (FR-5): short link tidak boleh menimpa konten WordPress.
+		if ( Yasyes_Shortlink_Validator::is_slug_taken_by_wp_content( $code ) ) {
+			return;
+		}
+
+		show_admin_bar( false );
 
 		if ( Yasyes_Shortlink_Link_Model::is_expired( $link ) ) {
 			status_header( 410 );

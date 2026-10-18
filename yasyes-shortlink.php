@@ -1,15 +1,13 @@
-﻿<?php
+<?php
 /**
  * Plugin Name:       Yasyes Short Link
  * Description:       Create short links on your root domain (domain.com/code) without third-party plugins. Manage links from the wp-admin dashboard or /short/dashboard with a minimal UI, instant search, and auto-expire.
- * Version:           1.4.0
+ * Version:           1.5.0
  * Requires at least: 6.0
  * Requires PHP:      7.4
  * Author:            Yasyes Studio
  * Author URI:        https://yasyes.id
  * License:           GPL v2 or later
- * Text Domain:       yasyes-shortlink
- * Domain Path:       /languages
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -19,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 define( 'YASYES_SHORTLINK_PLUGIN_FILE', __FILE__ );
 define( 'YASYES_SHORTLINK_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'YASYES_SHORTLINK_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
-define( 'YASYES_SHORTLINK_VERSION', '1.4.0' );
+define( 'YASYES_SHORTLINK_VERSION', '1.5.0' );
 
 require_once YASYES_SHORTLINK_PLUGIN_DIR . 'includes/class-yasyes-shortlink-activator.php';
 require_once YASYES_SHORTLINK_PLUGIN_DIR . 'includes/class-yasyes-shortlink-validator.php';

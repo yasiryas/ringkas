@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * "Manage Links" page in wp-admin (Yasyes Short Link menu).
  * Uses the same visual language as the Documentation page.

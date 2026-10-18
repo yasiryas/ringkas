@@ -43,6 +43,24 @@ yasyes-shortlink/
 └── assets/                  # yasyes-shortlink.css & yasyes-shortlink.js
 ```
 
+## Changelog
+
+### 1.5.0
+
+- Aliases may now contain hyphens and underscores (`-`, `_`).
+- Fixed: the admin bar was hidden on every single-word URL instead of only on short links.
+- Fixed: expiration dates use the site timezone, so they no longer shift when the server timezone differs from WordPress.
+- Fixed: an existing post/page/term slug always wins over a conflicting alias.
+- Fixed: `/short/logout` requires a valid nonce (was vulnerable to logout CSRF).
+- Fixed: non-JavaScript create/update/delete works in wp-admin and reports errors instead of failing silently.
+- Fixed: server-side search and pagination on the wp-admin "Manage Links" page.
+
+### 1.4.0
+
+- Redesigned the "Manage Links" page to match the Documentation page.
+- Added email feedback, "Buy me a coffee" link, and developer credit.
+- CSS cleanup and reduced statistics polling frequency.
+
 ## License
 
 GPL v2 or later.

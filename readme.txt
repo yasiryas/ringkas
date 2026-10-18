@@ -4,7 +4,7 @@ Tags: shortlink, short link, url shortener, link management, url
 Requires at least: 6.0
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.4.0
+Stable tag: 1.5.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -67,6 +67,16 @@ Use the **Feedback** button on the Manage Links page (wp-admin or front-end dash
 
 == Changelog ==
 
+= 1.5.0 =
+* Aliases may now contain hyphens and underscores, not only letters and numbers.
+* Fixed: the admin bar was hidden on every single-word URL, not only on short links.
+* Fixed: expiration dates now use the site timezone, so they no longer shift when the server timezone differs from WordPress.
+* Fixed: an existing post, page, or term slug always wins over a conflicting alias, as documented.
+* Fixed: `/short/logout` now requires a valid nonce (previous version allowed logout CSRF).
+* Fixed: create/update/delete without JavaScript now works in wp-admin and shows error messages instead of failing silently.
+* Fixed: search and pagination on the wp-admin "Manage Links" page were ignored server-side.
+* Docs: corrected the auto-refresh interval shown on the Documentation page (30 seconds).
+
 = 1.4.0 =
 * Redesigned the "Manage Links" page to align with the Documentation page.
 * Added email feedback feature.
@@ -75,6 +85,9 @@ Use the **Feedback** button on the Manage Links page (wp-admin or front-end dash
 * Reduced statistics polling frequency to ease server load.
 
 == Upgrade Notice ==
+
+= 1.5.0 =
+Alias characters, expiry timezone, logout security, and wp-admin submit fixes. Existing expiry dates are re-read in the current site timezone — verify any link that expires soon.
 
 = 1.4.0 =
 UI refresh and feedback feature. Clear your browser cache after updating.

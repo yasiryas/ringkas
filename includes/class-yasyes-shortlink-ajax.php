@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -119,7 +119,7 @@ class Yasyes_Shortlink_Ajax_Controller {
 			'original_url' => $link->original_url,
 			'clicks'       => (int) $link->click_count,
 			'expired'      => Yasyes_Shortlink_Link_Model::is_expired( $link ),
-			'expiry_text'  => $link->expired_at ? date_i18n( 'd M Y H:i', strtotime( $link->expired_at ) ) : '',
+			'expiry_text'  => $link->expired_at ? Yasyes_Shortlink_Link_Model::format_expiry( $link->expired_at ) : '',
 			'expiry_raw'   => $link->expired_at ? str_replace( ' ', 'T', substr( $link->expired_at, 0, 16 ) ) : '',
 			'updated_at'   => $link->updated_at,
 		);

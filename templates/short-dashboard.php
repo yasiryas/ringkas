@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Dashboard Yasyes Short Link di /short/dashboard.
  * Render awal server-side; setelah itu list diperbarui via AJAX + polling.
@@ -7,8 +7,9 @@
  * @var int           $total
  * @var int           $total_pages
  * @var array         $stats       {total_links, total_clicks, active}
- * @var string        $search
- * @var int           $page
+ * @var string      $search
+ * @var int         $page
+ * @var string|null $error
  */
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;

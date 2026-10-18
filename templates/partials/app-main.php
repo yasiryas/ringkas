@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Main app content: toolbar + table + pagination + modal (form & delete).
  * Used in front-end dashboard (/short/dashboard) and wp-admin menu.
@@ -7,14 +7,18 @@
  * @var int         $total       Total results.
  * @var int         $total_pages Number of pages.
  * @var array       $stats       {total_links, total_clicks, active}
- * @var string      $search      Initial search keyword.
- * @var int         $page        Active page.
- * @var string      $list_url    Base URL for the link list.
+ * @var string      $search    Initial search keyword.
+ * @var int         $page      Active page.
+ * @var string      $list_url  Base URL for the link list.
+ * @var string      $error     Failure message from a non-AJAX submit, if any.
  */
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 ?>
+	<?php if ( ! empty( $error ) ) : ?>
+		<div class="alert alert-error"><?php echo esc_html( $error ); ?></div>
+	<?php endif; ?>
 	<div class="toolbar">
 			<form method="get" class="search-bar" action="<?php echo esc_url( $list_url ); ?>" id="search-form">
 				<input type="search" name="s" value="<?php echo esc_attr( $search ); ?>" id="search-input"
@@ -49,7 +53,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 							</td>
 							<td><span class="target-url" title="<?php echo esc_attr( $link->original_url ); ?>"><?php echo esc_html( $link->original_url ); ?></span></td>
 							<td class="col-num"><?php echo esc_html( number_format_i18n( (int) $link->click_count ) ); ?></td>
-							<td><?php echo $link->expired_at ? esc_html( date_i18n( 'd M Y H:i', strtotime( $link->expired_at ) ) ) : '&mdash;'; ?></td>
+							<td><?php echo $link->expired_at ? esc_html( Yasyes_Shortlink_Link_Model::format_expiry( $link->expired_at ) ) : '&mdash;'; ?></td>
 							<td class="col-actions">
 								<button type="button" class="btn-icon" data-copy="<?php echo esc_attr( $short_url ); ?>" title="Copy link"><span class="dashicons dashicons-admin-page"></span></button>
 								<button type="button" class="btn-icon" data-edit="<?php echo esc_attr( $link->id ); ?>" title="Edit"><span class="dashicons dashicons-edit"></span></button>
@@ -83,9 +87,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 			<label class="field">
 				<span>Alias <em class="optional">(optional when creating)</em></span>
-				<input type="text" name="alias" pattern="[A-Za-z0-9]{3,20}" autocomplete="off"
+				<input type="text" name="alias" pattern="[A-Za-z0-9_-]{3,20}" autocomplete="off"
 					placeholder="promo2026" id="form-alias">
-				<small class="hint">3&ndash;20 alphanumeric characters. Leave empty for auto-generate.</small>
+				<small class="hint">3&ndash;20 letters, numbers, hyphens or underscores. Leave empty for auto-generate.</small>
 			</label>
 
 			<label class="field">
