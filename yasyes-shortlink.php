@@ -20,6 +20,7 @@ define( 'YASYES_SHORTLINK_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'YASYES_SHORTLINK_VERSION', '1.5.1' );
 
 require_once YASYES_SHORTLINK_PLUGIN_DIR . 'includes/class-yasyes-shortlink-activator.php';
+require_once YASYES_SHORTLINK_PLUGIN_DIR . 'includes/class-yasyes-shortlink-deactivator.php';
 require_once YASYES_SHORTLINK_PLUGIN_DIR . 'includes/class-yasyes-shortlink-validator.php';
 require_once YASYES_SHORTLINK_PLUGIN_DIR . 'includes/class-yasyes-shortlink-link-model.php';
 require_once YASYES_SHORTLINK_PLUGIN_DIR . 'includes/class-yasyes-shortlink-link-service.php';
@@ -30,6 +31,7 @@ require_once YASYES_SHORTLINK_PLUGIN_DIR . 'includes/class-yasyes-shortlink-admi
 require_once YASYES_SHORTLINK_PLUGIN_DIR . 'includes/class-yasyes-shortlink-router.php';
 
 register_activation_hook( __FILE__, array( 'Yasyes_Shortlink_Activator', 'activate' ) );
+register_deactivation_hook( __FILE__, array( 'Yasyes_Shortlink_Deactivator', 'deactivate' ) );
 add_action( 'parse_request', array( 'Yasyes_Shortlink_Router', 'dispatch' ) );
 Yasyes_Shortlink_Ajax_Controller::register();
 Yasyes_Shortlink_Settings::register();
