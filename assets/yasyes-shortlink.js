@@ -1,4 +1,4 @@
-﻿(function () {
+(function () {
 	'use strict';
 
 	var config = window.YasyesShortlinkConfig || {};
@@ -30,10 +30,15 @@
 		statTotal: document.getElementById('stat-total'),
 		statClicks: document.getElementById('stat-clicks'),
 		liveDot: document.getElementById('live-dot'),
-		toastEl: document.getElementById('ys-toast')
+		toastHost: document.getElementById('ys-toasts')
 	};
 
 	var isAppPage = Boolean(els.tbody && els.linkModal);
+
+	var TOAST_DURATION = { success: 2800, info: 2800, error: 5000 };
+	var TOAST_LIMIT = 3;
+
+	flushServerNotices();
 
 	if (!isAppPage) {
 		initLogoutModal();
@@ -61,14 +66,42 @@
 		};
 	}
 
-	function toast(message) {
-		if (!els.toastEl) return;
-		els.toastEl.textContent = message;
-		els.toastEl.classList.add('is-visible');
-		clearTimeout(els.toastEl._timer);
-		els.toastEl._timer = setTimeout(function () {
-			els.toastEl.classList.remove('is-visible');
-		}, 2200);
+	function toast(message, type) {
+		if (!els.toastHost || !message) {
+			return;
+		}
+
+		type = type === 'success' || type === 'error' ? type : 'info';
+
+		var el = document.createElement('div');
+		el.className = 'toast toast-' + type;
+		el.setAttribute('role', type === 'error' ? 'alert' : 'status');
+		el.textContent = message;
+		els.toastHost.appendChild(el);
+
+		while (els.toastHost.children.length > TOAST_LIMIT) {
+			els.toastHost.removeChild(els.toastHost.firstElementChild);
+		}
+
+		requestAnimationFrame(function () {
+			el.classList.add('is-visible');
+		});
+
+		setTimeout(function () {
+			el.classList.remove('is-visible');
+			setTimeout(function () {
+				if (el.parentNode) {
+					el.parentNode.removeChild(el);
+				}
+			}, 200);
+		}, TOAST_DURATION[type]);
+	}
+
+	function flushServerNotices() {
+		Array.prototype.forEach.call(document.querySelectorAll('[data-ys-notice]'), function (node) {
+			toast(node.textContent, node.getAttribute('data-ys-notice'));
+			node.parentNode.removeChild(node);
+		});
 	}
 
 	function post(action, data) {
@@ -258,7 +291,7 @@
 				}
 			})
 			.catch(function (error) {
-				if (!options.silent) toast(error.message);
+				if (!options.silent) toast(error.message, 'error');
 			})
 			.finally(function () {
 				state.inflight = false;
@@ -298,10 +331,10 @@
 			expired_at: els.linkForm.elements.expired_at.value
 		}).then(function (data) {
 			closeOverlay(els.linkModal);
-			toast(data.message);
+			toast(data.message, 'success');
 			return fetchList();
 		}).catch(function (error) {
-			toast(error.message);
+			toast(error.message, 'error');
 		}).finally(function () {
 			submitButton.disabled = false;
 		});
@@ -326,7 +359,7 @@
 
 		post('yasyes_shortlink_delete', { link_id: id }).then(function (data) {
 			closeOverlay(els.deleteModal);
-			toast(data.message);
+			toast(data.message, 'success');
 
 			if (Object.keys(state.items).length === 1 && state.page > 1) {
 				state.page -= 1;
@@ -334,7 +367,7 @@
 
 			return fetchList();
 		}).catch(function (error) {
-			toast(error.message);
+			toast(error.message, 'error');
 		}).finally(function () {
 			els.deleteConfirm.disabled = false;
 			state.pendingDeleteId = 0;
@@ -386,7 +419,7 @@
 		var copyButton = event.target.closest('[data-copy]');
 		if (copyButton) {
 			navigator.clipboard.writeText(copyButton.getAttribute('data-copy'))
-				.then(function () { toast('Link copied'); });
+				.then(function () { toast('Link copied', 'success'); });
 			return;
 		}
 
@@ -440,7 +473,7 @@
 			var message = document.getElementById('feedback-message').value.trim();
 
 			if (message.length < 10) {
-				toast('Message must be at least 10 characters.');
+				toast('Message must be at least 10 characters.', 'error');
 				return;
 			}
 
@@ -450,10 +483,10 @@
 				.then(function (data) {
 					modal.hidden = true;
 					form.reset();
-					toast(data.message);
+					toast(data.message, 'success');
 				})
 				.catch(function (error) {
-					toast(error.message);
+					toast(error.message, 'error');
 				})
 				.finally(function () {
 					submitBtn.disabled = false;

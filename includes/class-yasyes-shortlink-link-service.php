@@ -17,6 +17,8 @@ class Yasyes_Shortlink_Link_Service {
 		$action          = sanitize_key( wp_unslash( $_POST['action_type'] ?? '' ) );
 		$nonce           = sanitize_text_field( wp_unslash( $_POST['_wpnonce'] ?? '' ) );
 		$invalid_session = 'Your session expired. Refresh the page and try again.';
+		$result          = null;
+		$notice          = '';
 
 		switch ( $action ) {
 			case 'create':
@@ -24,6 +26,7 @@ class Yasyes_Shortlink_Link_Service {
 					return $invalid_session;
 				}
 				$result = self::create_from_request();
+				$notice = 'saved';
 				break;
 
 			case 'update':
@@ -31,6 +34,7 @@ class Yasyes_Shortlink_Link_Service {
 					return $invalid_session;
 				}
 				$result = self::update_from_request();
+				$notice = 'saved';
 				break;
 
 			case 'delete':
@@ -40,19 +44,51 @@ class Yasyes_Shortlink_Link_Service {
 				$result = Yasyes_Shortlink_Link_Model::delete( absint( $_POST['link_id'] ?? 0 ) )
 					? null
 					: new WP_Error( 'yasyes_shortlink_delete_failed', 'Failed to delete the link.' );
+				$notice = 'deleted';
 				break;
 
 			default:
-				$result = null;
-				break;
+				wp_safe_redirect( $back_url, 302 );
+				exit;
 		}
 
 		if ( is_wp_error( $result ) ) {
 			return $result->get_error_message();
 		}
 
-		wp_safe_redirect( $back_url, 302 );
+		wp_safe_redirect( add_query_arg( 'ys_notice', $notice, $back_url ), 302 );
 		exit;
+	}
+
+	/**
+	 * Feedback for the app pages: PRG success codes from ?ys_notice plus the non-AJAX failure text.
+	 * Rendered inline (works without JS) and turned into toasts by the front-end script.
+	 *
+	 * @return array<int, array{type: string, message: string}>
+	 */
+	public static function notices( string $error = '' ): array {
+		$messages = array(
+			'saved'   => 'Link saved.',
+			'deleted' => 'Link deleted.',
+		);
+		$code     = sanitize_key( wp_unslash( $_GET['ys_notice'] ?? '' ) );
+		$notices  = array();
+
+		if ( isset( $messages[ $code ] ) ) {
+			$notices[] = array(
+				'type'    => 'success',
+				'message' => $messages[ $code ],
+			);
+		}
+
+		if ( '' !== $error ) {
+			$notices[] = array(
+				'type'    => 'error',
+				'message' => $error,
+			);
+		}
+
+		return $notices;
 	}
 
 	/**

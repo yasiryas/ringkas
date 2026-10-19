@@ -6,15 +6,26 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 /**
  * AJAX endpoint for link CRUD (admin-ajax.php).
- * All actions require manage_options capability + nonce 'yasyes_shortlink_ajax'.
+ * Actions require a nonce ('yasyes_shortlink_ajax') plus either manage_options
+ * or the "public access" setting; in public mode they are also open to guests.
  */
 class Yasyes_Shortlink_Ajax_Controller {
 
 	public static function register(): void {
-		add_action( 'wp_ajax_yasyes_shortlink_list', array( __CLASS__, 'list_links' ) );
-		add_action( 'wp_ajax_yasyes_shortlink_save', array( __CLASS__, 'save_link' ) );
-		add_action( 'wp_ajax_yasyes_shortlink_delete', array( __CLASS__, 'delete_link' ) );
-		add_action( 'wp_ajax_yasyes_shortlink_feedback', array( __CLASS__, 'send_feedback' ) );
+		$actions = array(
+			'yasyes_shortlink_list'     => 'list_links',
+			'yasyes_shortlink_save'     => 'save_link',
+			'yasyes_shortlink_delete'   => 'delete_link',
+			'yasyes_shortlink_feedback' => 'send_feedback',
+		);
+
+		foreach ( $actions as $action => $method ) {
+			add_action( 'wp_ajax_' . $action, array( __CLASS__, $method ) );
+
+			if ( Yasyes_Shortlink_Settings::is_public() ) {
+				add_action( 'wp_ajax_nopriv_' . $action, array( __CLASS__, $method ) );
+			}
+		}
 	}
 
 	public static function list_links(): void {

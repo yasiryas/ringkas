@@ -16,9 +16,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 ?>
-	<?php if ( ! empty( $error ) ) : ?>
-		<div class="alert alert-error"><?php echo esc_html( $error ); ?></div>
-	<?php endif; ?>
+	<?php foreach ( Yasyes_Shortlink_Link_Service::notices( (string) $error ) as $notice ) : ?>
+		<div class="alert alert-<?php echo esc_attr( $notice['type'] ); ?>" data-ys-notice="<?php echo esc_attr( $notice['type'] ); ?>"><?php echo esc_html( $notice['message'] ); ?></div>
+	<?php endforeach; ?>
 	<div class="toolbar">
 			<form method="get" class="search-bar" action="<?php echo esc_url( $list_url ); ?>" id="search-form">
 				<input type="search" name="s" value="<?php echo esc_attr( $search ); ?>" id="search-input"
