@@ -88,6 +88,7 @@ class Yasyes_Shortlink_Router {
 		if ( Yasyes_Shortlink_Link_Model::is_expired( $link ) ) {
 			status_header( 410 );
 			nocache_headers();
+			Yasyes_Shortlink_Short_Pages::enqueue_assets();
 			include YASYES_SHORTLINK_PLUGIN_DIR . 'templates/link-expired.php';
 			exit;
 		}

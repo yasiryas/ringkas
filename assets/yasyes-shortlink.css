@@ -162,6 +162,16 @@ a { color: var(--primary); }
 }
 .optional { color: var(--muted); font-weight: 400; font-style: normal; }
 
+.alert {
+	margin: 0 0 14px;
+	padding: 10px 12px;
+	border: 1px solid var(--line);
+	border-radius: 8px;
+	font-size: 13.5px;
+}
+.alert-success { background: var(--success-bg); border-color: #a7f3d0; color: var(--success-text); }
+.alert-error { background: var(--error-bg); border-color: #fecaca; color: var(--error-text); }
+
 .btn {
 	display: inline-block;
 	padding: 9px 16px;
@@ -218,6 +228,7 @@ a { color: var(--primary); }
 	box-shadow: 0 20px 50px rgba(15, 23, 42, 0.25);
 }
 .modal-wide { width: min(460px, 100%); }
+.modal-sm { width: min(340px, 100%); }
 .modal h2 { margin: 0 0 6px; font-size: 18px; }
 .modal p { margin: 0; font-size: 14px; }
 .modal .field:first-of-type { margin-top: 16px; }
@@ -357,6 +368,7 @@ body.toplevel_page_yasyes-shortlink #wpcontent { padding-left: 0; padding-right:
 .ys-manage .doc-hero p { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; font-size: 14px; margin-top: 4px; }
 .ys-manage .doc-section { margin-top: 0; background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 0 0 2px; }
 .ys-manage .toolbar { padding: 16px 22px 12px; }
+.ys-manage .alert { margin: 16px 22px 0; }
 .ys-manage .search-bar input[type="search"] { max-width: 480px; min-height: 40px; }
 .ys-manage .table-wrap { width: 100%; }
 .ys-manage .target-url { max-width: 560px; }

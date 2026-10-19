@@ -45,6 +45,14 @@ yasyes-shortlink/
 
 ## Changelog
 
+### 1.5.1
+
+- Fixed: non-JavaScript submit in wp-admin ran after output started, so the redirect failed and PHP warnings appeared — it now runs on the `load-` hook.
+- Fixed: the HTTP 410 expired page loaded without the plugin stylesheet.
+- Fixed: `.alert`, `.alert-success`, `.alert-error`, and `.modal-sm` were used by templates but missing from the stylesheet.
+- Fixed: expiry time was displayed with a doubled timezone offset (`wp_date()` now).
+- Fixed: the logout confirmation modal never opened on the dashboard.
+
 ### 1.5.0
 
 - Aliases may now contain hyphens and underscores (`-`, `_`).

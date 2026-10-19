@@ -4,7 +4,7 @@ Tags: shortlink, short link, url shortener, link management, url
 Requires at least: 6.0
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.5.0
+Stable tag: 1.5.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -67,6 +67,14 @@ Use the **Feedback** button on the Manage Links page (wp-admin or front-end dash
 
 == Changelog ==
 
+= 1.5.1 =
+Fixes found while testing 1.5.0 on a live install.
+* Fixed: wp-admin submit without JavaScript ran inside the page callback (after output had started), so the redirect failed and PHP warnings were printed. It now runs on the `load-` hook.
+* Fixed: the expired-link page (HTTP 410) was served without the plugin stylesheet and looked unstyled.
+* Fixed: `.alert`, `.alert-success`, `.alert-error`, and `.modal-sm` were used by templates but missing from the stylesheet, so login/error messages and the logout modal were unstyled.
+* Fixed: the expiry time was displayed with a doubled timezone offset; it now uses `wp_date()`, so the shown time matches the instant used for expiration.
+* Fixed: the logout confirmation modal never opened on the dashboard (its click handler was not bound).
+
 = 1.5.0 =
 * Aliases may now contain hyphens and underscores, not only letters and numbers.
 * Fixed: the admin bar was hidden on every single-word URL, not only on short links.
@@ -85,6 +93,9 @@ Use the **Feedback** button on the Manage Links page (wp-admin or front-end dash
 * Reduced statistics polling frequency to ease server load.
 
 == Upgrade Notice ==
+
+= 1.5.1 =
+Fixes for wp-admin submit, expired-page styling, missing alert/modal styles, expiry display time, and the logout modal. Recommended for all 1.5.0 users.
 
 = 1.5.0 =
 Alias characters, expiry timezone, logout security, and wp-admin submit fixes. Existing expiry dates are re-read in the current site timezone — verify any link that expires soon.

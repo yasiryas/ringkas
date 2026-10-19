@@ -11,9 +11,29 @@ class Yasyes_Shortlink_Admin_Menu {
 
 	public const PAGE_SLUG = 'yasyes-shortlink';
 
+	/**
+	 * Failure message from a non-JS submit, shown on the page rendered later in the same request.
+	 *
+	 * @var string
+	 */
+	private static $post_error = '';
+
 	public static function register(): void {
 		add_action( 'admin_menu', array( __CLASS__, 'add_menu' ) );
+		add_action( 'load-toplevel_page_' . self::PAGE_SLUG, array( __CLASS__, 'handle_post' ) );
 		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'enqueue_assets' ) );
+	}
+
+	/**
+	 * Runs on load-* — before wp-admin sends any output, so the redirect after a successful
+	 * submit actually works (it cannot be done inside the page callback).
+	 */
+	public static function handle_post(): void {
+		if ( 'POST' !== $_SERVER['REQUEST_METHOD'] ) {
+			return;
+		}
+
+		self::$post_error = Yasyes_Shortlink_Link_Service::handle_post_request( menu_page_url( self::PAGE_SLUG, false ) );
 	}
 
 	public static function add_menu(): void {
@@ -88,10 +108,7 @@ class Yasyes_Shortlink_Admin_Menu {
 			wp_die( 'You do not have access.' );
 		}
 
-		$error = null;
-		if ( 'POST' === $_SERVER['REQUEST_METHOD'] ) {
-			$error = Yasyes_Shortlink_Link_Service::handle_post_request( menu_page_url( self::PAGE_SLUG, false ) );
-		}
+		$error = self::$post_error;
 
 		$search = sanitize_text_field( wp_unslash( $_GET['s'] ?? '' ) );
 		$page   = max( 1, absint( $_GET['paged'] ?? 1 ) );

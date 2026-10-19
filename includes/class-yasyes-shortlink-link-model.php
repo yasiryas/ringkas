@@ -206,7 +206,7 @@ class Yasyes_Shortlink_Link_Model {
 	}
 
 	public static function format_expiry( string $expired_at ): string {
-		return date_i18n( 'd M Y H:i', self::expiry_timestamp( $expired_at ) );
+		return wp_date( 'd M Y H:i', self::expiry_timestamp( $expired_at ) );
 	}
 
 	private static function normalize_datetime( string $value ): ?string {

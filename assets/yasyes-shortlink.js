@@ -349,8 +349,8 @@
 
 	wireOverlay(els.linkModal);
 	wireOverlay(els.deleteModal);
-	wireOverlay(document.getElementById('logout-modal'));
 
+	initLogoutModal();
 	initFeedback();
 
 	els.linkForm.addEventListener('submit', saveFromForm);

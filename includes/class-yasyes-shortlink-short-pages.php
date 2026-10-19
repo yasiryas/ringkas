@@ -170,7 +170,10 @@ class Yasyes_Shortlink_Short_Pages {
 		return is_user_logged_in() && current_user_can( 'manage_options' );
 	}
 
-	private static function enqueue_assets(): void {
+	/**
+	 * Assets for every public plugin page (/short/*, expired page).
+	 */
+	public static function enqueue_assets(): void {
 		wp_enqueue_style( 'dashicons' );
 		wp_enqueue_style( 'ys-app', YASYES_SHORTLINK_PLUGIN_URL . 'assets/yasyes-shortlink.css', array( 'dashicons' ), YASYES_SHORTLINK_VERSION );
 		wp_enqueue_script( 'ys-app', YASYES_SHORTLINK_PLUGIN_URL . 'assets/yasyes-shortlink.js', array(), YASYES_SHORTLINK_VERSION, true );
