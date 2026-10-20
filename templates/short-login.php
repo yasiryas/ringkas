@@ -39,7 +39,7 @@ require YASYES_SHORTLINK_PLUGIN_DIR . 'templates/partials/head.php';
 		</form>
 
 		<p class="auth-alt"><a href="<?php echo esc_url( home_url( '/short/forgot-password' ) ); ?>">Forgot password?</a></p>
-		<p class="auth-alt">Need an account? Contact your administrator.</p>
+		<p class="auth-alt">Don't have an account? <a href="<?php echo esc_url( home_url( '/short/register' ) ); ?>">Register</a></p>
 	</div>
 </div>
 <?php

@@ -322,6 +322,8 @@
 		els.linkForm.elements.alias.value = isEdit ? item.short_code : '';
 		els.linkForm.elements.expired_at.value = isEdit ? (item.expiry_raw || '') : '';
 		els.linkForm.dataset.editId = isEdit ? id : '';
+		els.linkForm.elements.action_type.value = isEdit ? 'update' : 'create';
+		els.linkForm.elements.link_id.value = isEdit ? id : '';
 
 		openOverlay(els.linkModal);
 		els.linkForm.elements.original_url.focus();

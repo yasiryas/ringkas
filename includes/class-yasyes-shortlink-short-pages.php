@@ -15,7 +15,7 @@ class Yasyes_Shortlink_Short_Pages {
 			exit;
 		}
 
-		if ( is_user_logged_in() && current_user_can( 'manage_options' ) ) {
+		if ( is_user_logged_in() && Yasyes_Shortlink_Settings::user_can_access( wp_get_current_user() ) ) {
 			wp_safe_redirect( home_url( '/short/dashboard' ), 302 );
 			exit;
 		}
@@ -37,7 +37,7 @@ class Yasyes_Shortlink_Short_Pages {
 					false
 				);
 
-				if ( is_wp_error( $user ) || ! user_can( $user, 'manage_options' ) ) {
+				if ( is_wp_error( $user ) || ! Yasyes_Shortlink_Settings::user_can_access( $user ) ) {
 					$error = is_wp_error( $user )
 						? 'Incorrect username or password.'
 						: 'This account does not have access to Yasyes Short Link.';
@@ -52,10 +52,69 @@ class Yasyes_Shortlink_Short_Pages {
 		$notice = '';
 		if ( isset( $_GET['reset'] ) ) {
 			$notice = 'Password has been changed. Please log in with your new password.';
+		} elseif ( isset( $_GET['registered'] ) ) {
+			$notice = 'Account created. Please log in with your new account.';
 		}
 
 		self::enqueue_assets();
 		include YASYES_SHORTLINK_PLUGIN_DIR . 'templates/short-login.php';
+		exit;
+	}
+
+	public static function register(): void {
+		if ( Yasyes_Shortlink_Settings::is_public() ) {
+			wp_safe_redirect( home_url( '/short/dashboard' ), 302 );
+			exit;
+		}
+
+		if ( is_user_logged_in() && Yasyes_Shortlink_Settings::user_can_access( wp_get_current_user() ) ) {
+			wp_safe_redirect( home_url( '/short/dashboard' ), 302 );
+			exit;
+		}
+
+		$error = '';
+		if ( 'POST' === $_SERVER['REQUEST_METHOD'] ) {
+			self::assert_not_throttled( 'register', self::RATE_LOGIN_LIMIT, self::RATE_LOGIN_WINDOW );
+			self::throttle( 'register' );
+
+			if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['_wpnonce'] ?? '' ) ), 'yasyes_shortlink_register' ) ) {
+				$error = 'Invalid session. Please try again.';
+			} else {
+				$username = sanitize_user( wp_unslash( $_POST['username'] ?? '' ), true );
+				$email    = sanitize_email( wp_unslash( $_POST['email'] ?? '' ) );
+				$password = (string) wp_unslash( $_POST['password'] ?? '' );
+
+				if ( empty( $username ) || empty( $email ) || ! is_email( $email ) ) {
+					$error = 'Please fill in a valid username and email.';
+				} elseif ( username_exists( $username ) || email_exists( $email ) ) {
+					$error = 'That username or email is already taken.';
+				} elseif ( strlen( $password ) < 8 ) {
+					$error = 'Password must be at least 8 characters.';
+				} else {
+					$user_id = wp_insert_user(
+						array(
+							'user_login' => $username,
+							'user_email' => $email,
+							'user_pass'  => $password,
+							'role'       => 'subscriber',
+						)
+					);
+
+					if ( is_wp_error( $user_id ) ) {
+						$error = $user_id->get_error_message();
+					} else {
+						$user = new WP_User( $user_id );
+						$user->add_cap( Yasyes_Shortlink_Settings::CAP );
+
+						wp_safe_redirect( home_url( '/short?registered=1' ), 302 );
+						exit;
+					}
+				}
+			}
+		}
+
+		self::enqueue_assets();
+		include YASYES_SHORTLINK_PLUGIN_DIR . 'templates/short-register.php';
 		exit;
 	}
 
@@ -167,7 +226,7 @@ class Yasyes_Shortlink_Short_Pages {
 			return true;
 		}
 
-		return is_user_logged_in() && current_user_can( 'manage_options' );
+		return is_user_logged_in() && Yasyes_Shortlink_Settings::user_can_access( wp_get_current_user() );
 	}
 
 	/**

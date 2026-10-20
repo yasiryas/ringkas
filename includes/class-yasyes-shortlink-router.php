@@ -50,6 +50,9 @@ class Yasyes_Shortlink_Router {
 			case '':
 				Yasyes_Shortlink_Short_Pages::login();
 				break;
+			case 'register':
+				Yasyes_Shortlink_Short_Pages::register();
+				break;
 			case 'forgot-password':
 				Yasyes_Shortlink_Short_Pages::forgot_password();
 				break;

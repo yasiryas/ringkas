@@ -11,6 +11,7 @@ class Yasyes_Shortlink_Settings {
 
 	public const OPTION_SITE_LABEL    = 'yasyes_shortlink_site_label';
 	public const OPTION_PUBLIC_ACCESS = 'yasyes_shortlink_public_access';
+	public const CAP                  = 'manage_yasyes_shortlink_links';
 
 	public static function register(): void {
 		add_action( 'admin_init', array( __CLASS__, 'register_settings' ) );
@@ -35,6 +36,16 @@ class Yasyes_Shortlink_Settings {
 	 */
 	public static function is_public(): bool {
 		return (bool) get_option( self::OPTION_PUBLIC_ACCESS, false );
+	}
+
+	/**
+	 * Access check for dashboard & auth handlers: the custom capability
+	 * (granted on register) or full admin. Independent of the public-access option.
+	 *
+	 * @param WP_User|int $user
+	 */
+	public static function user_can_access( $user ): bool {
+		return user_can( $user, self::CAP ) || user_can( $user, 'manage_options' );
 	}
 
 	public static function register_settings(): void {

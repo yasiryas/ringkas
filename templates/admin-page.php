@@ -9,7 +9,6 @@
  * @var array       $stats       {total_links, total_clicks, active}
  * @var string      $search
  * @var int         $page
- * @var object|null $editing
  * @var string      $error
  * @var string      $list_url
  */

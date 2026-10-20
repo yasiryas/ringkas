@@ -7,9 +7,14 @@ WordPress **short-link** plugin built by [Yasyes Studio](https://yasyes.id) that
 - **Root-domain short links** — short links like `domain.com/promo2026`
 - **Manage from wp-admin** — "Manage Links" menu with a clean UI
 - **Front-end dashboard** — also manage from `/short/dashboard`
+- **Self-service accounts** — register at `/short/register`; new users get link-management capability only, never full admin
+- **Full custom auth** — login, forgot & reset password pages outside wp-login.php
 - **Instant search** — filter alias/destination URL in real time
-- **Auto-expire** — links can have an expiration date
+- **Auto-expire** — links can have an expiration date; visitors get an HTTP 410 page
 - **Real-time stats** — total links, active links, and total clicks with auto-polling
+- **QR code** — generate/download a PNG per short link
+- **Anti-collision safety** — an alias can never override an existing post/page/term slug
+- **Rate limited** — login, register, and password reset throttled per IP
 - **Email feedback** — users can send suggestions/bugs directly to the admin
 - **Lightweight** — small CSS/JS, system fonts, no heavy dependencies
 
@@ -26,6 +31,18 @@ WordPress **short-link** plugin built by [Yasyes Studio](https://yasyes.id) that
 3. **Edit / delete** — use the icons in the Actions column of each row
 4. **Search** — type in the search field to filter the list
 5. **Expiry** — set an expiration date when creating/editing a link
+6. **Share access** — send `/short/register` to someone; their account can manage links from `/short/dashboard` but has no other wp-admin access
+
+## Public pages
+
+| URL | Purpose |
+|---|---|
+| `/short` | Custom login |
+| `/short/register` | Create an account (link-management capability only) |
+| `/short/forgot-password` | Request a password reset email |
+| `/short/reset-password` | Set a new password (valid emailed link only) |
+| `/short/dashboard` | Front-end link dashboard |
+| `/short/logout` | Sign out (nonce-protected) |
 
 ## Requirements
 
@@ -44,6 +61,15 @@ yasyes-shortlink/
 ```
 
 ## Changelog
+
+### 1.6.0
+
+- Added: self-service registration at `/short/register` — new accounts receive the `manage_yasyes_shortlink_links` capability (link management only, not full admin).
+- Changed: dashboard and link CRUD access now checks `manage_yasyes_shortlink_links` (or admin) instead of `manage_options` only.
+- Changed: the "Manage Links" wp-admin menu is available to anyone with the capability.
+- Improved: Documentation page — "Accounts & access" guide, full public-pages table, more FAQs.
+- Improved: non-JS edit form fallback now sends the correct action and link ID.
+- Fixed: malformed icon markup on the Documentation page.
 
 ### 1.5.1
 

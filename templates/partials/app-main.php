@@ -79,7 +79,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<h2 id="form-title">Create link</h2>
 		<form method="post" action="<?php echo esc_url( $list_url ); ?>" id="link-form">
 			<?php wp_nonce_field( 'yasyes_shortlink_link_save' ); ?>
-			<input type="hidden" name="action_type" value="create">
+			<input type="hidden" name="action_type" id="form-action-type" value="create">
+			<input type="hidden" name="link_id" id="form-link-id" value="">
 
 			<label class="field">
 				<span>Destination URL</span>

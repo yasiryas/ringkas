@@ -4,7 +4,7 @@ Tags: shortlink, short link, url shortener, link management, url
 Requires at least: 6.0
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.5.1
+Stable tag: 1.6.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -19,9 +19,14 @@ Yasyes Short Link lets you create short URLs directly on your root domain (e.g. 
 * **Root domain short links** — clean URLs like `https://domain.com/promo2026`
 * **WP Admin management** — a clean, easy-to-use "Manage Links" page
 * **Front-end dashboard** — manage links from `/short/dashboard` as well
+* **Self-service accounts** — register at `/short/register`; new users get link-management access only, never full admin
+* **Full auth flow** — custom login, register, forgot & reset password pages outside wp-login.php
 * **Instant search** — filter aliases or destination URLs in real time
-* **Auto-expire** — set an expiration date on any link
+* **Auto-expire** — set an expiration date on any link; visitors see an HTTP 410 "link expired" page
 * **Real-time statistics** — link count, active links, and total clicks update automatically
+* **QR code** — generate and download a PNG QR for any short link
+* **Anti-collision safety** — an alias can never override an existing post, page, or category slug
+* **Rate limited** — login, register, and password reset are throttled per IP
 * **Feedback via email** — users can send suggestions or bug reports directly to the admin
 * **Lightweight** — small CSS/JS, system fonts, no heavy dependencies
 
@@ -31,6 +36,13 @@ Yasyes Short Link lets you create short URLs directly on your root domain (e.g. 
 2. Click **Create Link**, enter a destination URL, and save.
 3. Copy the generated short link and share it.
 4. Manage, edit, or delete links at any time.
+
+= Sharing access with someone else =
+
+1. Send them `https://your-domain.com/short/register`.
+2. They create their own account (username, email, password).
+3. The account automatically gets the `manage_yasyes_shortlink_links` capability:
+   full access to the link dashboard at `/short/dashboard`, but nothing else in wp-admin.
 
 == Installation ==
 
@@ -52,6 +64,14 @@ Directly on your WordPress root domain, e.g. `https://domain.com/image`.
 
 When creating or editing a link, fill in the **Expires** field with the desired date and time. The link is automatically disabled after that time.
 
+= How do I let someone else manage links without giving them full admin access? =
+
+Share `https://your-domain.com/short/register` with them. The account they create receives only the `manage_yasyes_shortlink_links` capability — it can create, edit, and delete links from `/short/dashboard`, but has no access to themes, plugins, users, or other wp-admin settings.
+
+= Where does someone log in for the front-end dashboard? =
+
+At `https://your-domain.com/short` — a custom login page that uses the same WordPress accounts as wp-admin. Password resets also stay on `/short/forgot-password` and never touch wp-login.php.
+
 = Does this plugin use any third-party services? =
 
 No. All links and statistics are stored in your own WordPress database.
@@ -66,6 +86,14 @@ Use the **Feedback** button on the Manage Links page (wp-admin or front-end dash
 2. Front-end dashboard at /short/dashboard.
 
 == Changelog ==
+
+= 1.6.0 =
+* Added: self-service registration at `/short/register` — new accounts receive the `manage_yasyes_shortlink_links` capability (link management only, not full admin).
+* Changed: dashboard and link CRUD access now checks the `manage_yasyes_shortlink_links` capability (or admin) instead of `manage_options` only.
+* Changed: the "Manage Links" wp-admin menu is now available to anyone with the `manage_yasyes_shortlink_links` capability.
+* Improved: Documentation page — new "Accounts & access" guide, full public-pages table, more FAQs.
+* Improved: non-JS edit form fallback now sends the correct action and link ID.
+* Fixed: malformed icon markup on the Documentation page.
 
 = 1.5.1 =
 Fixes found while testing 1.5.0 on a live install.

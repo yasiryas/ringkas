@@ -47,7 +47,7 @@ class Yasyes_Shortlink_Activator {
 	private static function grant_admin_capability(): void {
 		$admin = get_role( 'administrator' );
 		if ( $admin ) {
-			$admin->add_cap( 'manage_yasyes_shortlink_links' );
+			$admin->add_cap( Yasyes_Shortlink_Settings::CAP );
 		}
 	}
 }

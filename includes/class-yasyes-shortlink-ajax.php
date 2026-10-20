@@ -137,7 +137,7 @@ class Yasyes_Shortlink_Ajax_Controller {
 	}
 
 	private static function guard(): void {
-		if ( ! Yasyes_Shortlink_Settings::is_public() && ! current_user_can( 'manage_options' ) ) {
+		if ( ! Yasyes_Shortlink_Settings::is_public() && ! Yasyes_Shortlink_Settings::user_can_access( wp_get_current_user() ) ) {
 			wp_send_json_error( array( 'message' => 'You do not have access.' ), 403 );
 		}
 
