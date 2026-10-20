@@ -385,12 +385,21 @@
 
 	// ---- Modal QR ----
 
-	qrcode.stringToBytes = qrcode.stringToBytesFuncs['UTF-8'];
+	var qrAvailable = typeof qrcode === 'function';
+
+	if (qrAvailable) {
+		qrcode.stringToBytes = qrcode.stringToBytesFuncs['UTF-8'];
+	}
 
 	var QR_CELL_DISPLAY = 6;
 	var QR_CELL_EXPORT = 12;
 
 	function openQrModal(id) {
+		if (!qrAvailable) {
+			toast('QR generator failed to load.', 'error');
+			return;
+		}
+
 		var item = state.items[id];
 		if (!item) return;
 
