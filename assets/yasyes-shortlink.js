@@ -11,7 +11,9 @@
 		items: {},
 		fingerprint: '',
 		inflight: false,
-		pendingDeleteId: 0
+		pendingDeleteId: 0,
+		qr: null,
+		qrShortCode: ''
 	};
 
 	var els = {
@@ -26,6 +28,10 @@
 		deleteModal: document.getElementById('delete-modal'),
 		deleteCode: document.getElementById('delete-code'),
 		deleteConfirm: document.getElementById('delete-confirm'),
+		qrModal: document.getElementById('qr-modal'),
+		qrCode: document.getElementById('qr-code'),
+		qrCanvasWrap: document.getElementById('qr-canvas-wrap'),
+		qrDownload: document.getElementById('qr-download'),
 		statActive: document.getElementById('stat-active'),
 		statTotal: document.getElementById('stat-total'),
 		statClicks: document.getElementById('stat-clicks'),
@@ -159,6 +165,7 @@
 
 		closeOverlay(els.deleteModal);
 		closeOverlay(els.linkModal);
+		closeOverlay(els.qrModal);
 		closeOverlay(document.getElementById('logout-modal'));
 	});
 
@@ -178,6 +185,8 @@
 			'<td class="col-actions">' +
 				'<button type="button" class="btn-icon" data-copy="' + escapeHtml(item.short_url) + '" title="Copy link">' +
 					'<span class="dashicons dashicons-admin-page"></span></button>' +
+				'<button type="button" class="btn-icon" data-qr="' + item.id + '" title="QR Code">' +
+					'<span class="dashicons dashicons-qrcode"></span></button>' +
 				'<button type="button" class="btn-icon" data-edit="' + item.id + '" title="Edit">' +
 					'<span class="dashicons dashicons-edit"></span></button>' +
 				'<button type="button" class="btn-icon btn-icon-danger" data-delete="' + item.id + '" title="Delete">' +
@@ -374,6 +383,68 @@
 		});
 	}
 
+	// ---- Modal QR ----
+
+	qrcode.stringToBytes = qrcode.stringToBytesFuncs['UTF-8'];
+
+	var QR_CELL_DISPLAY = 6;
+	var QR_CELL_EXPORT = 12;
+
+	function openQrModal(id) {
+		var item = state.items[id];
+		if (!item) return;
+
+		var qr = qrcode(0, 'M');
+		qr.addData(item.short_url);
+		qr.make();
+
+		state.qr = qr;
+		state.qrShortCode = item.short_code;
+		els.qrCode.textContent = item.short_code;
+		renderQrCanvas(qr, els.qrCanvasWrap, QR_CELL_DISPLAY);
+
+		openOverlay(els.qrModal);
+	}
+
+	function renderQrCanvas(qr, target, cellSize) {
+		var count = qr.getModuleCount();
+		var canvas = document.createElement('canvas');
+		canvas.width = count * cellSize;
+		canvas.height = count * cellSize;
+
+		var ctx = canvas.getContext('2d');
+		ctx.fillStyle = '#fff';
+		ctx.fillRect(0, 0, canvas.width, canvas.height);
+		ctx.fillStyle = '#000';
+
+		for (var row = 0; row < count; row++) {
+			for (var col = 0; col < count; col++) {
+				if (qr.isDark(row, col)) {
+					ctx.fillRect(col * cellSize, row * cellSize, cellSize, cellSize);
+				}
+			}
+		}
+
+		target.innerHTML = '';
+		target.appendChild(canvas);
+	}
+
+	function downloadQrPng() {
+		if (!state.qr || !state.qrShortCode) return;
+
+		var exportWrap = document.createElement('div');
+		renderQrCanvas(state.qr, exportWrap, QR_CELL_EXPORT);
+
+		exportWrap.querySelector('canvas').toBlob(function (blob) {
+			var link = document.createElement('a');
+			var url = URL.createObjectURL(blob);
+			link.href = url;
+			link.download = 'qr-' + state.qrShortCode + '.png';
+			link.click();
+			URL.revokeObjectURL(url);
+		}, 'image/png');
+	}
+
 	// ---- Event wiring ----
 
 	els.btnCreate.addEventListener('click', function () {
@@ -382,12 +453,14 @@
 
 	wireOverlay(els.linkModal);
 	wireOverlay(els.deleteModal);
+	wireOverlay(els.qrModal);
 
 	initLogoutModal();
 	initFeedback();
 
 	els.linkForm.addEventListener('submit', saveFromForm);
 	els.deleteConfirm.addEventListener('click', confirmDelete);
+	els.qrDownload.addEventListener('click', downloadQrPng);
 
 	document.getElementById('search-form').addEventListener('submit', function (event) {
 		event.preventDefault();
@@ -420,6 +493,12 @@
 		if (copyButton) {
 			navigator.clipboard.writeText(copyButton.getAttribute('data-copy'))
 				.then(function () { toast('Link copied', 'success'); });
+			return;
+		}
+
+		var qrButton = event.target.closest('[data-qr]');
+		if (qrButton) {
+			openQrModal(parseInt(qrButton.getAttribute('data-qr'), 10));
 			return;
 		}
 

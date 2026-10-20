@@ -431,3 +431,14 @@ body.toplevel_page_yasyes-shortlink #wpcontent { padding-left: 0; padding-right:
 	border-color: var(--primary);
 	box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
 }
+
+.qr-preview {
+	margin-top: 14px;
+	display: flex;
+	justify-content: center;
+}
+.qr-preview canvas {
+	max-width: 100%;
+	height: auto;
+	image-rendering: pixelated;
+}

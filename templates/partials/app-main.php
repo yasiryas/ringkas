@@ -55,8 +55,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 							<td class="col-num"><?php echo esc_html( number_format_i18n( (int) $link->click_count ) ); ?></td>
 							<td><?php echo $link->expired_at ? esc_html( Yasyes_Shortlink_Link_Model::format_expiry( $link->expired_at ) ) : '&mdash;'; ?></td>
 							<td class="col-actions">
-								<button type="button" class="btn-icon" data-copy="<?php echo esc_attr( $short_url ); ?>" title="Copy link"><span class="dashicons dashicons-admin-page"></span></button>
-								<button type="button" class="btn-icon" data-edit="<?php echo esc_attr( $link->id ); ?>" title="Edit"><span class="dashicons dashicons-edit"></span></button>
+							<button type="button" class="btn-icon" data-copy="<?php echo esc_attr( $short_url ); ?>" title="Copy link"><span class="dashicons dashicons-admin-page"></span></button>
+							<button type="button" class="btn-icon" data-qr="<?php echo esc_attr( $link->id ); ?>" title="QR Code"><span class="dashicons dashicons-qrcode"></span></button>
+							<button type="button" class="btn-icon" data-edit="<?php echo esc_attr( $link->id ); ?>" title="Edit"><span class="dashicons dashicons-edit"></span></button>
 								<button type="button" class="btn-icon btn-icon-danger" data-delete="<?php echo esc_attr( $link->id ); ?>" title="Delete"><span class="dashicons dashicons-trash"></span></button>
 							</td>
 						</tr>
@@ -99,6 +100,20 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 			<button type="submit" class="btn btn-primary btn-block">Save</button>
 		</form>
+	</div>
+</div>
+
+<div class="modal-overlay" id="qr-modal" hidden>
+	<div class="modal modal-sm" role="dialog" aria-modal="true" aria-labelledby="qr-title">
+		<h2 id="qr-title">QR Code</h2>
+		<p class="muted">/<strong id="qr-code"></strong></p>
+		<div class="qr-preview" id="qr-canvas-wrap"></div>
+		<div class="modal-actions">
+			<button type="button" class="btn" id="qr-download">
+				<span class="dashicons dashicons-download"></span> Download PNG
+			</button>
+			<button type="button" class="btn btn-primary" data-modal-close>Done</button>
+		</div>
 	</div>
 </div>
 

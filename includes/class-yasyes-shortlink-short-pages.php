@@ -176,7 +176,8 @@ class Yasyes_Shortlink_Short_Pages {
 	public static function enqueue_assets(): void {
 		wp_enqueue_style( 'dashicons' );
 		wp_enqueue_style( 'ys-app', YASYES_SHORTLINK_PLUGIN_URL . 'assets/yasyes-shortlink.css', array( 'dashicons' ), YASYES_SHORTLINK_VERSION );
-		wp_enqueue_script( 'ys-app', YASYES_SHORTLINK_PLUGIN_URL . 'assets/yasyes-shortlink.js', array(), YASYES_SHORTLINK_VERSION, true );
+		wp_enqueue_script( 'ys-qr', YASYES_SHORTLINK_PLUGIN_URL . 'assets/qrcode.js', array(), YASYES_SHORTLINK_VERSION, true );
+		wp_enqueue_script( 'ys-app', YASYES_SHORTLINK_PLUGIN_URL . 'assets/yasyes-shortlink.js', array( 'ys-qr' ), YASYES_SHORTLINK_VERSION, true );
 		wp_add_inline_script(
 			'ys-app',
 			sprintf(

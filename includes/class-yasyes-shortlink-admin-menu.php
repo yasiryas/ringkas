@@ -91,7 +91,8 @@ class Yasyes_Shortlink_Admin_Menu {
 			YASYES_SHORTLINK_VERSION
 		);
 
-		wp_enqueue_script( 'ys-app', YASYES_SHORTLINK_PLUGIN_URL . 'assets/yasyes-shortlink.js', array(), YASYES_SHORTLINK_VERSION, true );
+		wp_enqueue_script( 'ys-qr', YASYES_SHORTLINK_PLUGIN_URL . 'assets/qrcode.js', array(), YASYES_SHORTLINK_VERSION, true );
+		wp_enqueue_script( 'ys-app', YASYES_SHORTLINK_PLUGIN_URL . 'assets/yasyes-shortlink.js', array( 'ys-qr' ), YASYES_SHORTLINK_VERSION, true );
 		wp_add_inline_script(
 			'ys-app',
 			sprintf(
@@ -219,6 +220,11 @@ class Yasyes_Shortlink_Admin_Menu {
 							<td><span class="dashicons dashicons-admin-page" aria-hidden="true"></i></td>
 							<td>Copy</td>
 							<td>Copy short link to clipboard.</td>
+						</tr>
+						<tr>
+							<td><span class="dashicons dashicons-qrcode" aria-hidden="true"></span></td>
+							<td>QR Code</td>
+							<td>Show the short link as a QR code; download as PNG.</td>
 						</tr>
 						<tr>
 							<td><span class="dashicons dashicons-edit" aria-hidden="true"></i></td>
