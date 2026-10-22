@@ -44,6 +44,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	</div>
 </div>
 
+<div class="ys-toasts" id="ys-toasts" role="region" aria-label="Notifications"></div>
+
 <div class="modal-overlay" id="feedback-modal" hidden>
 	<div class="modal modal-wide" role="dialog" aria-modal="true" aria-labelledby="feedback-title">
 		<h2 id="feedback-title">Send Feedback</h2>

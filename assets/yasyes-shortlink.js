@@ -445,15 +445,42 @@
 
 		var exportWrap = document.createElement('div');
 		renderQrCanvas(state.qr, exportWrap, QR_CELL_EXPORT);
+		var canvas = exportWrap.querySelector('canvas');
 
-		exportWrap.querySelector('canvas').toBlob(function (blob) {
+		if (!canvas) {
+			toast('QR generator failed to render.', 'error');
+			return;
+		}
+
+		try {
+			if (typeof canvas.toBlob === 'function') {
+				canvas.toBlob(function (blob) {
+					if (!blob) {
+						toast('Failed to generate QR image.', 'error');
+						return;
+					}
+					var link = document.createElement('a');
+					var url = URL.createObjectURL(blob);
+					link.href = url;
+					link.download = 'qr-' + state.qrShortCode + '.png';
+					document.body.appendChild(link);
+					link.click();
+					document.body.removeChild(link);
+					URL.revokeObjectURL(url);
+				}, 'image/png');
+				return;
+			}
+
+			var dataUrl = canvas.toDataURL('image/png');
 			var link = document.createElement('a');
-			var url = URL.createObjectURL(blob);
-			link.href = url;
+			link.href = dataUrl;
 			link.download = 'qr-' + state.qrShortCode + '.png';
+			document.body.appendChild(link);
 			link.click();
-			URL.revokeObjectURL(url);
-		}, 'image/png');
+			document.body.removeChild(link);
+		} catch (e) {
+			toast('Failed to download QR.', 'error');
+		}
 	}
 
 	// ---- Event wiring ----
